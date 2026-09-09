@@ -14,6 +14,7 @@
     "@chakra-ui/react": "^3.37.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
+    "@getbrevo/brevo": "^6.0.3",
     "@google/generative-ai": "^0.24.1",
     "@tenantflow/types": "workspace:*",
     "bcryptjs": "^3.0.3",
@@ -29,7 +30,6 @@
     "stripe": "^22.6.1"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^26.5.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

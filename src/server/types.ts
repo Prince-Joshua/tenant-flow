@@ -1,5 +1,81 @@
-/** Return type every form-bound Server Action resolves to (besides
- * `redirect()`, which throws internally and never actually returns this).
- * Consumed by `useFormState` on the client to render errors/success inline
- * without any Redux/RTK Query state. */
+import type { Document, Types } from "mongoose";
+
 export type ActionState = { error?: string; success?: string } | undefined;
+
+export interface IUser extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  password: string;
+  isEmailVerified: boolean;
+  emailVerificationToken?: string;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  role: "user" | "superadmin";
+  createdAt: Date;
+  updatedAt: Date;
+  comparePassword(candidate: string): Promise<boolean>;
+}
+
+export interface IOrganization extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  slug: string;
+  owner: Types.ObjectId;
+  plan: "free" | "pro" | "enterprise";
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  subscriptionStatus:
+    | "active"
+    | "inactive"
+    | "past_due"
+    | "canceled"
+    | "trialing";
+  billingCycleEnd?: Date;
+  usage: {
+    documentsGenerated: number;
+    apiCalls: number;
+  };
+  limits: {
+    documentsPerCycle: number;
+    membersAllowed: number;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IMembership extends Document {
+  _id: Types.ObjectId;
+  user: Types.ObjectId;
+  organization: Types.ObjectId;
+  role: "owner" | "admin" | "member";
+  status: "active" | "invited" | "suspended";
+  inviteToken?: string;
+  inviteExpires?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IDocument extends Document {
+  _id: Types.ObjectId;
+  title: string;
+  content: string;
+  organization: Types.ObjectId;
+  createdBy: Types.ObjectId;
+  prompt?: string;
+  tokensUsed: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IActivityLog extends Document {
+  _id: Types.ObjectId;
+  organization: Types.ObjectId;
+  user?: Types.ObjectId;
+  userName?: string;
+  action: string;
+  resource?: string;
+  meta?: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+}

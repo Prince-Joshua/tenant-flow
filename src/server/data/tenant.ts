@@ -4,7 +4,7 @@ import connectDB from '@/server/db';
 import { Organization, Membership } from '@/server/models';
 import { getCurrentUser } from './auth';
 import { getActiveOrgSlug } from '@/server/session';
-import { requireSuperAdminRole } from '@/server/auth';
+import { requireSuperAdminRole } from '@/server/utils/roles';
 import type { IUser, IOrganization, IMembership } from '@/server/types';
 
 export interface TenantContext {
