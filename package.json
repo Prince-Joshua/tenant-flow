@@ -1,0 +1,36 @@
+{
+  "name": "tenantflow",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TenantFlow - Multi-Tenant SaaS Platform (Next.js monorepo, SSR)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "create-admin": "tsx src/server/scripts/createSuperAdmin.ts"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.37.0",
+    "@emotion/react": "^11.14.0",
+    "@google/generative-ai": "^0.24.1",
+    "@tenantflow/types": "workspace:*",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.12",
+    "mongoose": "^9.9.5",
+    "next": "16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "resend": "^6.26.0",
+    "stripe": "^22.6.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^26.5.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}
