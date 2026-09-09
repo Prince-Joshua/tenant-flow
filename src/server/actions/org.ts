@@ -36,7 +36,7 @@ export async function inviteMemberAction(_prevState: ActionState, formData: Form
   const email = String(formData.get('email') || '').trim();
   const roleInput = String(formData.get('role') || '');
   if (!email) return { error: 'Email is required' };
-  const assignedRole = ['admin', 'member'].includes(roleInput) ? roleInput : 'member';
+  const assignedRole: 'admin' | 'member' = ['admin', 'member'].includes(roleInput) ? (roleInput as 'admin' | 'member') : 'member';
 
   try {
     await connectDB();
