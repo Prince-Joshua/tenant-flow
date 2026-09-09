@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Flex, Grid, Input, Stack, Text, Textarea } from '@chakra-ui/react';
 import { generateDocumentAction } from '@/server/actions/documents';
 import { SubmitButton } from '@/components/shared/SubmitButton';
@@ -10,7 +10,7 @@ const TONES = ['professional', 'casual', 'persuasive', 'technical'];
 const LENGTHS = ['short', 'medium', 'long'];
 
 export default function GenerateDocumentForm() {
-  const [state, formAction] = useFormState(generateDocumentAction, undefined);
+  const [state, formAction] = useActionState(generateDocumentAction, undefined);
 
   return (
     <form action={formAction}>

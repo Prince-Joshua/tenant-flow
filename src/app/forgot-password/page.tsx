@@ -12,7 +12,7 @@ export default function ForgotPasswordPage() {
             <Text fontSize="sm" color="text.muted">Enter your email and we&apos;ll send you a link.</Text>
           </Box>
           <ForgotPasswordForm />
-          <Text fontSize="sm" color="text.muted" textAlign="center">
+          <Text as="div" fontSize="sm" color="text.muted" textAlign="center">
             <ChakraLink href="/login" color="violet.400" fontWeight="medium">← Back to login</ChakraLink>
           </Text>
         </Stack>

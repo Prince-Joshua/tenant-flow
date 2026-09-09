@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Flex, Input, Text } from '@chakra-ui/react';
 import { inviteMemberAction } from '@/server/actions/org';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { inputStyle, nativeSelectCss } from '@/lib/inputStyles';
 
 export default function InviteForm() {
-  const [state, formAction] = useFormState(inviteMemberAction, undefined);
+  const [state, formAction] = useActionState(inviteMemberAction, undefined);
 
   return (
     <form action={formAction}>

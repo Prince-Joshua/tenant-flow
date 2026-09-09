@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { updateOrgAction } from '@/server/actions/org';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { inputStyle } from '@/lib/inputStyles';
 
 export default function OrgSettingsForm({ name }: { name: string }) {
-  const [state, formAction] = useFormState(updateOrgAction, undefined);
+  const [state, formAction] = useActionState(updateOrgAction, undefined);
 
   return (
     <form action={formAction}>

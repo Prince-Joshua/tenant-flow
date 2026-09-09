@@ -13,7 +13,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
             <Text fontSize="sm" color="text.muted">Choose a strong password for your account.</Text>
           </Box>
           <ResetPasswordForm token={token || ''} />
-          <Text fontSize="sm" color="text.muted" textAlign="center">
+          <Text as="div" fontSize="sm" color="text.muted" textAlign="center">
             <ChakraLink href="/login" color="violet.400" fontWeight="medium">← Back to login</ChakraLink>
           </Text>
         </Stack>

@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { resetPasswordAction } from '@/server/actions/auth';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { inputStyle } from '@/lib/inputStyles';
 
 export default function ResetPasswordForm({ token }: { token: string }) {
-  const [state, formAction] = useFormState(resetPasswordAction, undefined);
+  const [state, formAction] = useActionState(resetPasswordAction, undefined);
 
   return (
     <form action={formAction}>

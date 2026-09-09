@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { registerAction } from '@/server/actions/auth';
 import { SubmitButton } from '@/components/shared/SubmitButton';
@@ -15,7 +15,7 @@ const fields: [string, string, string, string][] = [
 ];
 
 export default function RegisterForm() {
-  const [state, formAction] = useFormState(registerAction, undefined);
+  const [state, formAction] = useActionState(registerAction, undefined);
 
   return (
     <form action={formAction}>
@@ -36,7 +36,7 @@ export default function RegisterForm() {
         <SubmitButton w="full" bg="violet.600" color="white" borderRadius="lg" fontWeight="semibold" _hover={{ bg: 'violet.500' }}>
           Create account
         </SubmitButton>
-        <Text fontSize="sm" color="text.muted" textAlign="center">
+        <Text as="div" fontSize="sm" color="text.muted" textAlign="center">
           Already have an account? <ChakraLink href="/login" color="violet.400" fontWeight="medium">Sign in</ChakraLink>
         </Text>
       </Stack>

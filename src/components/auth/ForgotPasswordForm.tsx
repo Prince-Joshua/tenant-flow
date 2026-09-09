@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { forgotPasswordAction } from '@/server/actions/auth';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { inputStyle } from '@/lib/inputStyles';
 
 export default function ForgotPasswordForm() {
-  const [state, formAction] = useFormState(forgotPasswordAction, undefined);
+  const [state, formAction] = useActionState(forgotPasswordAction, undefined);
 
   if (state?.success) {
     return (

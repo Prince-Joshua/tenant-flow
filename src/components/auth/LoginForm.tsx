@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { loginAction } from '@/server/actions/auth';
 import { SubmitButton } from '@/components/shared/SubmitButton';
@@ -8,7 +8,7 @@ import { ChakraLink } from '@/components/shared/ChakraLink';
 import { inputStyle } from '@/lib/inputStyles';
 
 export default function LoginForm() {
-  const [state, formAction] = useFormState(loginAction, undefined);
+  const [state, formAction] = useActionState(loginAction, undefined);
 
   return (
     <form action={formAction}>
@@ -34,7 +34,7 @@ export default function LoginForm() {
         <SubmitButton w="full" bg="violet.600" color="white" borderRadius="lg" fontWeight="semibold" _hover={{ bg: 'violet.500' }}>
           Sign in
         </SubmitButton>
-        <Text fontSize="sm" color="text.muted" textAlign="center">
+        <Text as="div" fontSize="sm" color="text.muted" textAlign="center">
           Don&apos;t have an account? <ChakraLink href="/register" color="violet.400" fontWeight="medium">Create one</ChakraLink>
         </Text>
       </Stack>

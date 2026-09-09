@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { updateMemberRoleAction } from '@/server/actions/org';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { nativeSelectCss } from '@/lib/inputStyles';
 
 export default function RoleUpdateForm({ memberId, role }: { memberId: string; role: string }) {
-  const [state, formAction] = useFormState(updateMemberRoleAction, undefined);
+  const [state, formAction] = useActionState(updateMemberRoleAction, undefined);
 
   return (
     <Box>
