@@ -1,11 +1,24 @@
-import { requireSuperAdmin } from '@/server/data/tenant';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import type { Metadata } from "next";
+import { Provider } from "../components/ui/provider";
+import { EmotionRegistry } from "../components/ui/emotion-registry";
 
-export default async function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  const user = await requireSuperAdmin();
+export const metadata: Metadata = {
+  title: "TenantFlow",
+  description: "Multi-Tenant SaaS Platform",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <DashboardLayout isAdmin user={{ name: user.name, email: user.email }}>
-      {children}
-    </DashboardLayout>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <EmotionRegistry>
+          <Provider>{children}</Provider>
+        </EmotionRegistry>
+      </body>
+    </html>
   );
 }

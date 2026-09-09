@@ -2,8 +2,9 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { ChakraLink } from '@/components/shared/ChakraLink';
 import { acceptInviteToken } from '@/server/actions/auth';
 
-export default async function AcceptInvitePage({ searchParams }: { searchParams: { token?: string } }) {
-  const { ok } = await acceptInviteToken(searchParams.token || '');
+export default async function AcceptInvitePage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
+  const { token } = await searchParams;
+  const { ok } = await acceptInviteToken(token || '');
   return (
     <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
       <Box bg="bg.surface" border="1px solid" borderColor="border.subtle" borderRadius="2xl" p="10" w="full" maxW="420px" textAlign="center">

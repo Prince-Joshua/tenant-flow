@@ -6,10 +6,11 @@ import { PlanBadge, EmptyState } from '@/components/shared';
 import OrgAdminControls from '@/components/admin/OrgAdminControls';
 import { inputStyle } from '@/lib/inputStyles';
 
-export default async function AdminOrgsPage({ searchParams }: { searchParams: { page?: string; search?: string; plan?: string } }) {
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
-  const { organizations, pagination } = await getAllOrgs({ page, search, plan: searchParams.plan || '' });
+export default async function AdminOrgsPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string; plan?: string }> }) {
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams.page) || 1;
+  const search = resolvedSearchParams.search || '';
+  const { organizations, pagination } = await getAllOrgs({ page, search, plan: resolvedSearchParams.plan || '' });
   const orgs = JSON.parse(JSON.stringify(organizations));
 
   return (

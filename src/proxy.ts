@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
+import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
-const SESSION_COOKIE = 'tf_session';
+const SESSION_COOKIE = "tf_session";
 
 async function hasValidSession(req: NextRequest): Promise<boolean> {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
@@ -16,22 +16,23 @@ async function hasValidSession(req: NextRequest): Promise<boolean> {
   }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const authed = await hasValidSession(req);
 
-  const isProtected = pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
-  const isAuthPage = ['/login', '/register'].includes(pathname);
+  const isProtected =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+  const isAuthPage = ["/login", "/register"].includes(pathname);
 
   if (isProtected && !authed) {
     const url = req.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
   if (isAuthPage && authed) {
     const url = req.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
@@ -39,5 +40,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/login', '/register'],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/login", "/register"],
 };

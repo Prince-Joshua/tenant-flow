@@ -6,7 +6,8 @@ import { UsageBar } from '@/components/shared';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { createCheckoutAction, createPortalAction } from '@/server/actions/billing';
 
-export default async function BillingPage({ searchParams }: { searchParams: { error?: string } }) {
+export default async function BillingPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   const { org, membership } = await requireTenant();
   const billing = await getBillingInfo(org);
   const isOwner = membership.role === 'owner';
@@ -14,9 +15,9 @@ export default async function BillingPage({ searchParams }: { searchParams: { er
   return (
     <>
       <PageHeader title="Billing" subtitle="Manage your plan and view invoices" />
-      {searchParams.error && (
+      {error && (
         <Box bg="rgba(244,63,94,0.08)" border="1px solid" borderColor="rose.500" borderRadius="lg" px="4" py="3" mb="6">
-          <Text fontSize="sm" color="rose.400">{searchParams.error}</Text>
+          <Text fontSize="sm" color="rose.400">{error}</Text>
         </Box>
       )}
 

@@ -4,8 +4,9 @@ import { verifyEmailToken } from '@/server/actions/auth';
 
 // A GET link click from an email — verified directly during render via a
 // server-only function, no client-side useVerifyEmailQuery() involved.
-export default async function VerifyEmailPage({ searchParams }: { searchParams: { token?: string } }) {
-  const { ok } = await verifyEmailToken(searchParams.token || '');
+export default async function VerifyEmailPage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
+  const { token } = await searchParams;
+  const { ok } = await verifyEmailToken(token || '');
   return (
     <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
       <Box bg="bg.surface" border="1px solid" borderColor="border.subtle" borderRadius="2xl" p="10" w="full" maxW="420px" textAlign="center">

@@ -5,9 +5,10 @@ import PageHeader from '@/components/layout/PageHeader';
 import { EmptyState } from '@/components/shared';
 import { inputStyle } from '@/lib/inputStyles';
 
-export default async function AdminUsersPage({ searchParams }: { searchParams: { page?: string; search?: string } }) {
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
+export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams.page) || 1;
+  const search = resolvedSearchParams.search || '';
   const { users, pagination } = await getAllUsers({ page, search });
   const list = JSON.parse(JSON.stringify(users));
 

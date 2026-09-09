@@ -12,15 +12,16 @@ import { inputStyle } from '@/lib/inputStyles';
 export default async function DocumentsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; search?: string; doc?: string };
+  searchParams: Promise<{ page?: string; search?: string; doc?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const { org } = await requireTenant();
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
+  const page = Number(resolvedSearchParams.page) || 1;
+  const search = resolvedSearchParams.search || '';
 
   const [{ documents, pagination }, selected] = await Promise.all([
     getDocuments(org, { page, search }),
-    searchParams.doc ? getDocument(org, searchParams.doc) : Promise.resolve(null),
+    resolvedSearchParams.doc ? getDocument(org, resolvedSearchParams.doc) : Promise.resolve(null),
   ]);
 
   const docs = JSON.parse(JSON.stringify(documents));

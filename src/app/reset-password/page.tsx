@@ -2,7 +2,8 @@ import { Box, Flex, Stack, Text } from '@chakra-ui/react';
 import { ChakraLink } from '@/components/shared/ChakraLink';
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
 
-export default function ResetPasswordPage({ searchParams }: { searchParams: { token?: string } }) {
+export default async function ResetPasswordPage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
+  const { token } = await searchParams;
   return (
     <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
       <Box bg="bg.surface" border="1px solid" borderColor="border.subtle" borderRadius="2xl" p="10" w="full" maxW="420px">
@@ -11,7 +12,7 @@ export default function ResetPasswordPage({ searchParams }: { searchParams: { to
             <Text fontSize="xl" fontWeight="bold" color="text.primary" mb="1">Set new password</Text>
             <Text fontSize="sm" color="text.muted">Choose a strong password for your account.</Text>
           </Box>
-          <ResetPasswordForm token={searchParams.token || ''} />
+          <ResetPasswordForm token={token || ''} />
           <Text fontSize="sm" color="text.muted" textAlign="center">
             <ChakraLink href="/login" color="violet.400" fontWeight="medium">← Back to login</ChakraLink>
           </Text>
