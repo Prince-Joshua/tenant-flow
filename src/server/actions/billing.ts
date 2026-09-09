@@ -5,7 +5,7 @@ import connectDB from '@/server/db';
 import stripe from '@/server/config/stripe';
 import PLANS from '@/server/config/plans';
 import { requireTenant } from '@/server/data/tenant';
-import { requireRole } from '@/server/auth';
+import { requireRole } from '@/server/utils/roles';
 import AppError from '@/server/utils/appError';
 
 /** Bound directly to a plain `<form action={createCheckoutAction}>` (no

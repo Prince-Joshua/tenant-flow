@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import connectDB from '@/server/db';
 import { TFDocument, Organization } from '@/server/models';
 import { requireTenant } from '@/server/data/tenant';
-import { checkUsage } from '@/server/auth';
+import { checkUsage } from '@/server/utils/roles';
 import { buildPrompt, generateContent } from '@/server/genai';
 import logActivity from '@/server/utils/activityLogger';
 import AppError from '@/server/utils/appError';

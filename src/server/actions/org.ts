@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import connectDB from '@/server/db';
 import { User, Membership } from '@/server/models';
 import { requireTenant } from '@/server/data/tenant';
-import { requireRole } from '@/server/auth';
+import { requireRole } from '@/server/utils/roles';
 import { generateRandomToken } from '@/server/utils/tokens';
 import { sendInviteEmail } from '@/server/utils/email';
 import logActivity from '@/server/utils/activityLogger';

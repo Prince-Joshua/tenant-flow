@@ -9,7 +9,7 @@ import { generateRandomToken } from "@/server/utils/tokens";
 import { sendInviteEmail } from "@/server/utils/email";
 import logActivity from "@/server/utils/activityLogger";
 import AppError from "@/server/utils/appError";
-import { ActionState } from "../types";
+import type { ActionState } from "../types";
 
 export async function updateOrgAction(
   _prevState: ActionState,
@@ -48,8 +48,10 @@ export async function inviteMemberAction(
   const email = String(formData.get("email") || "").trim();
   const roleInput = String(formData.get("role") || "");
   if (!email) return { error: "Email is required" };
-  const assignedRole = ["admin", "member"].includes(roleInput)
-    ? roleInput
+  const assignedRole: "admin" | "member" = ["admin", "member"].includes(
+    roleInput,
+  )
+    ? (roleInput as "admin" | "member")
     : "member";
 
   try {
@@ -159,8 +161,7 @@ export async function removeMemberAction(formData: FormData): Promise<void> {
       });
     }
   } catch {
-    // Permission or lookup failure on a plain delete button — nothing to
-    // surface inline for, just leave state unchanged.
+    
   }
 
   revalidatePath("/dashboard/members");
