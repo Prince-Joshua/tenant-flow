@@ -1,10 +1,11 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Flex, Input, Button } from "@chakra-ui/react";
 import { renameDocumentAction } from "@/server/actions/documents";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { inputStyle } from "@/lib/inputStyles";
+import { Text } from "@chakra-ui/react";
 
 export default function RenameDocumentForm({
   id,
@@ -24,17 +25,22 @@ export default function RenameDocumentForm({
           fontWeight="bold"
           color="text.primary"
           lineClamp={1}
+          flex="1"
+          minW="0"
         >
           {title}
         </Text>
         <Button
-          size="xs"
+          type="button"
           onClick={() => setEditing(true)}
-          fontSize="xs"
-          color="text.muted"
-          _hover={{ color: "violet.400" }}
+          size="xs"
+          variant="outline"
+          borderColor="border.default"
+          color="text.secondary"
+          borderRadius="lg"
+          flexShrink={0}
         >
-          ✎ Rename
+          Rename
         </Button>
       </Flex>
     );
@@ -62,14 +68,18 @@ export default function RenameDocumentForm({
           color="white"
           borderRadius="lg"
           _hover={{ bg: "violet.500" }}
+          flexShrink={0}
         >
           Save
         </SubmitButton>
         <Button
-          size="xs"
+          type="button"
           onClick={() => setEditing(false)}
-          fontSize="xs"
+          size="xs"
+          variant="ghost"
           color="text.muted"
+          borderRadius="lg"
+          flexShrink={0}
         >
           Cancel
         </Button>

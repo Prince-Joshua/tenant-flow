@@ -23,6 +23,7 @@ import {
   createFromTemplateAction,
 } from "@/server/actions/documents";
 import { inputStyle, nativeSelectCss } from "@/lib/inputStyles";
+import DocumentExportActions from "@/components/documents/DocumentExportActions";
 
 const STATUS_FILTERS = [
   { value: "", label: "All (excl. archived)" },
@@ -387,6 +388,11 @@ export default async function DocumentsPage({
                   </SubmitButton>
                 </form>
               )}
+
+              <DocumentExportActions
+                title={selectedDoc.title}
+                content={selectedDoc.content}
+              />
             </Flex>
 
             {selectedDoc.pendingContent && (

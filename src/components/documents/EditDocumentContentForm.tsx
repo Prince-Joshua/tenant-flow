@@ -1,9 +1,10 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Text, Textarea, Button } from "@chakra-ui/react";
 import { updateDocumentAction } from "@/server/actions/documents";
 import { SubmitButton } from "@/components/shared/SubmitButton";
+import { LuPen, LuPenLine } from "react-icons/lu";
 
 export default function EditDocumentContentForm({
   id,
@@ -12,7 +13,8 @@ export default function EditDocumentContentForm({
 }: {
   id: string;
   content: string;
-
+  // When set, editing is blocked (e.g. a regeneration is pending review)
+  // and this text explains why.
   disabledReason?: string;
 }) {
   const [editing, setEditing] = useState(false);
@@ -29,16 +31,15 @@ export default function EditDocumentContentForm({
             </Text>
           )}
           <Button
-            size="xs"
             onClick={() => !disabled && setEditing(true)}
             disabled={disabled}
-            fontSize="xs"
-            color="text.muted"
-            opacity={disabled ? 0.5 : 1}
-            cursor={disabled ? "not-allowed" : "pointer"}
-            _hover={disabled ? {} : { color: "violet.400" }}
+            size="2xs"
+            variant="outline"
+            borderColor="border.default"
+            color="text.secondary"
+            borderRadius="lg"
           >
-            Edit
+            <LuPenLine />
           </Button>
         </Flex>
         <Text
@@ -83,10 +84,12 @@ export default function EditDocumentContentForm({
           Save
         </SubmitButton>
         <Button
-          size="xs"
+          type="button"
           onClick={() => setEditing(false)}
-          fontSize="xs"
+          size="xs"
+          variant="ghost"
           color="text.muted"
+          borderRadius="lg"
         >
           Cancel
         </Button>
