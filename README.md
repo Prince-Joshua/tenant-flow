@@ -1,103 +1,79 @@
 # TenantFlow
 
-A production-grade multi-tenant SaaS platform built with TypeScript, Next.js 14, Node.js, Express, MongoDB, Stripe, and Google Gemini. Features JWT refresh token rotation, Stripe subscription lifecycle management, per-tenant usage metering, role-based access control, and an AI writing assistant.
+A production-grade multi-tenant SaaS platform built as a single Next.js 16 App Router application, using Server Components and Server Actions end to end — no separate backend. Features cookie-based session auth, Stripe subscription billing with per-tenant usage metering, role-based access control, and an AI writing assistant powered by Google Gemini.
 
 ---
 
 ## Tech Stack
 
-| Layer    | Technology                                                                   |
-| -------- | ---------------------------------------------------------------------------- |
-| Frontend | Next.js 14 (App Router), TypeScript, Chakra UI v3, Redux Toolkit + RTK Query |
-| Backend  | Node.js, Express, TypeScript                                                 |
-| Database | MongoDB, Mongoose                                                            |
-| Auth     | JWT access + refresh token rotation                                          |
-| Billing  | Stripe Subscriptions + Webhooks                                              |
-| AI       | Google Gemini 2.0 Flash                                                      |
-| Email    | Resend                                                                       |
+| Layer | Technology |
+|---|---|
+| App | Next.js 16 (App Router), TypeScript, Server Actions — one unified app, no separate API server |
+| UI | Chakra UI v3 |
+| Database | MongoDB (Atlas in production), Mongoose |
+| Auth | Signed, httpOnly session cookie (no JWT access/refresh tokens) |
+| Billing | Stripe Subscriptions + Webhooks |
+| AI | Google Gemini |
+| Email | Brevo (transactional) |
+| Package manager | pnpm (workspace monorepo — `@tenantflow/types` is a local workspace package) |
+| Hosting | Vercel |
 
 ---
 
 ## Local Setup
 
-**Backend**
-
 ```bash
-cd backend
-npm install
-cp .env.example .env   # fill in all values
-npm run dev
-npm run create-admin   # create superadmin account
+pnpm install
+cp .env.example .env   # fill in all values — see below
+pnpm dev
+pnpm create-admin       # seeds a superadmin (see note below)
 ```
 
-**Frontend**
+> This is a pnpm workspace — use `pnpm`, not `npm`. `npm install` will fail to resolve `@tenantflow/types` (`workspace:*` is a pnpm/yarn-only protocol).
 
-```bash
-cd frontend
-npm install
-# create .env.local with NEXT_PUBLIC_API_URL=http://localhost:5000/api
-npm run dev
+### Environment variables
+
+See `.env.example` for the full list. Notable ones:
+
+- `MONGO_URI` — MongoDB connection string (Atlas in production; whitelist `0.0.0.0/0` in Atlas Network Access if deploying to Vercel, since serverless functions don't have static IPs)
+- `SESSION_SECRET` — signs the session cookie
+- `APP_URL` — used to build absolute links in emails and Stripe redirect URLs; must be the real deployed URL (no trailing slash) in production
+- `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` — from Stripe Dashboard → Developers → API keys / Webhooks
+- `STRIPE_FREE_PRICE_ID` / `STRIPE_PRO_PRICE_ID` / `STRIPE_ENTERPRISE_PRICE_ID` — must be actual **Price** IDs (`price_...`), not Product IDs (`prod_...`); free tier's can be left blank, since checkout is never invoked for the free plan
+- `BREVO_API_KEY` / `BREVO_SENDER_EMAIL` — the sender address must be a **verified sender** (or verified domain) in Brevo, or transactional email sends will fail silently server-side
+- `GEMINI_API_KEY` — Google Gemini API key
+
+### Superadmin seed script
+
+`pnpm create-admin` runs `src/server/scripts/createSuperAdmin.ts`, which seeds a default account:
+
 ```
+admin@tenantflow.dev / superadmin123
+```
+
+⚠️ This is a hardcoded placeholder committed to the repo — log in once and change the password through the app immediately after running this, especially before/after running it against a production database.
 
 ---
 
-## API Endpoints
+## Deploying (Vercel)
 
-### Auth — `/api/auth`
+1. Import the GitHub repo into Vercel. The repo root *is* the workspace root (contains `pnpm-workspace.yaml`), so leave Root Directory unset.
+2. Add every env var from `.env.example` in Vercel → Settings → Environment Variables, scoped to Production.
+3. Whitelist `0.0.0.0/0` in MongoDB Atlas → Network Access.
+4. Deploy, then set `APP_URL` to the real Vercel URL (or custom domain) once you have it, and redeploy.
+5. In Stripe → Developers → Webhooks, add an endpoint at `https://<your-domain>/api/billing/webhook`, subscribed to `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, and `customer.subscription.deleted`. Copy its signing secret into `STRIPE_WEBHOOK_SECRET` and redeploy — each endpoint has its own secret, so a local Stripe CLI's `whsec_...` will not work in production.
 
-| Method | Endpoint               | Auth | Description                    |
-| ------ | ---------------------- | ---- | ------------------------------ |
-| POST   | `/register`            | ❌   | Register + create org          |
-| POST   | `/login`               | ❌   | Login, returns tokens          |
-| POST   | `/refresh`             | ❌   | Rotate refresh token           |
-| POST   | `/logout`              | ✅   | Invalidate refresh token       |
-| GET    | `/verify-email?token=` | ❌   | Verify email address           |
-| POST   | `/forgot-password`     | ❌   | Send reset email               |
-| POST   | `/reset-password`      | ❌   | Set new password               |
-| GET    | `/me`                  | ✅   | Get current user + memberships |
+Note on the Stripe SDK: this project targets a post-Basil API version, where `Subscription.current_period_end` moved to `subscription.items.data[].current_period_end`, and `Invoice.subscription` moved to `invoice.parent.subscription_details.subscription`. The webhook handler (`src/app/api/billing/webhook/route.ts`) already accounts for this.
 
-### Organization — `/api/org` (requires `x-org-slug` header)
+---
 
-| Method | Endpoint            | Role   | Description        |
-| ------ | ------------------- | ------ | ------------------ |
-| GET    | `/`                 | member | Get org + members  |
-| PATCH  | `/`                 | admin  | Update org name    |
-| POST   | `/members/invite`   | admin  | Invite member      |
-| PATCH  | `/members/:id/role` | owner  | Update member role |
-| DELETE | `/members/:id`      | admin  | Remove member      |
-| GET    | `/activity`         | member | Get activity log   |
+## App Routes
 
-### Billing — `/api/billing`
+Public/auth pages (`src/app/*/page.tsx`): `/`, `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`, `/org-select`.
 
-| Method | Endpoint    | Role   | Description            |
-| ------ | ----------- | ------ | ---------------------- |
-| GET    | `/`         | member | Get billing info       |
-| POST   | `/checkout` | owner  | Create Stripe checkout |
-| POST   | `/portal`   | owner  | Open billing portal    |
-| POST   | `/webhook`  | ❌     | Stripe webhook handler |
+Authenticated app: `/dashboard` (org home, documents, members, billing — see `src/app/dashboard/`), `/admin` (superadmin-only: overview, `/admin/orgs`, `/admin/users`, `/admin/activity`).
 
-### Documents — `/api/documents`
-
-| Method | Endpoint          | Auth   | Description          |
-| ------ | ----------------- | ------ | -------------------- |
-| GET    | `/`               | member | List documents       |
-| POST   | `/generate`       | member | Generate with Gemini |
-| GET    | `/:id`            | member | Get document         |
-| PATCH  | `/:id`            | member | Update document      |
-| DELETE | `/:id`            | member | Delete document      |
-| POST   | `/:id/regenerate` | member | Regenerate content   |
-
-### Admin — `/api/admin` (superadmin only)
-
-| Method | Endpoint                | Description       |
-| ------ | ----------------------- | ----------------- |
-| GET    | `/stats`                | Platform overview |
-| GET    | `/orgs`                 | All organizations |
-| PATCH  | `/orgs/:id/plan`        | Change org plan   |
-| PATCH  | `/orgs/:id/suspend`     | Suspend org       |
-| PATCH  | `/orgs/:id/reset-usage` | Reset usage       |
-| GET    | `/users`                | All users         |
-| GET    | `/activity`             | Platform activity |
+All data access and mutation goes through Server Actions and Server Components in `src/server/actions/` and `src/server/data/` — there is no separate REST API to document; route handlers exist only where an external caller needs one (currently just `/api/billing/webhook` for Stripe).
 
 ---
 
@@ -106,7 +82,6 @@ npm run dev
 - [ ] BullMQ async email dispatch
 - [ ] Redis cache for tenant middleware
 - [ ] Jest + Supertest test suite
-- [ ] OpenAPI / Swagger docs
 - [ ] Stripe usage-based billing
 - [ ] SSO / OAuth2 (Google, GitHub)
 - [ ] WebSocket real-time notifications
