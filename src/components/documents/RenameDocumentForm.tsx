@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useActionState, useState } from 'react';
-import { Flex, Input, Text } from '@chakra-ui/react';
-import { renameDocumentAction } from '@/server/actions/documents';
-import { SubmitButton } from '@/components/shared/SubmitButton';
-import { inputStyle } from '@/lib/inputStyles';
+import { useActionState, useState } from "react";
+import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { renameDocumentAction } from "@/server/actions/documents";
+import { SubmitButton } from "@/components/shared/SubmitButton";
+import { inputStyle } from "@/lib/inputStyles";
 
 export default function RenameDocumentForm({
   id,
@@ -19,19 +19,23 @@ export default function RenameDocumentForm({
   if (!editing) {
     return (
       <Flex align="center" gap="2">
-        <Text fontSize="md" fontWeight="bold" color="text.primary" lineClamp={1}>
+        <Text
+          fontSize="md"
+          fontWeight="bold"
+          color="text.primary"
+          lineClamp={1}
+        >
           {title}
         </Text>
-        <Text
-          as="button"
-          type="button"
+        <Button
+          size="xs"
           onClick={() => setEditing(true)}
           fontSize="xs"
           color="text.muted"
-          _hover={{ color: 'violet.400' }}
+          _hover={{ color: "violet.400" }}
         >
           ✎ Rename
-        </Text>
+        </Button>
       </Flex>
     );
   }
@@ -52,18 +56,23 @@ export default function RenameDocumentForm({
           autoFocus
           {...inputStyle}
         />
-        <SubmitButton size="xs" bg="violet.600" color="white" borderRadius="lg" _hover={{ bg: 'violet.500' }}>
+        <SubmitButton
+          size="xs"
+          bg="violet.600"
+          color="white"
+          borderRadius="lg"
+          _hover={{ bg: "violet.500" }}
+        >
           Save
         </SubmitButton>
-        <Text
-          as="button"
-          type="button"
+        <Button
+          size="xs"
           onClick={() => setEditing(false)}
           fontSize="xs"
           color="text.muted"
         >
           Cancel
-        </Text>
+        </Button>
       </Flex>
       {state?.error && (
         <Text fontSize="xs" color="rose.400" mt="1">
