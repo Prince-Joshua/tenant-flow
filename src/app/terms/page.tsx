@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
+import { HomeLink } from "@/components/shared/HomeLink";
 
 const LAST_UPDATED = "September 10, 2026";
 
@@ -39,11 +40,16 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <Text>
           TenantFlow is offered on Free, Pro, and Enterprise plans. Each plan
           includes a specific document-generation allowance per billing cycle
-          and a limit on the number of members per organization, as shown on our{" "}
-          <ChakraLink href="/dashboard/billing" color="violet.400">
-            Billing page
+          and a limit on the number of members per organization, as shown on our
+          <ChakraLink
+            href="/dashboard/billing"
+            color="violet.400"
+            display="inline"
+            mx={1}
+          >
+            Billing page.
           </ChakraLink>
-          . Usage resets at the start of each billing cycle and does not roll
+          Usage resets at the start of each billing cycle and does not roll
           over.
         </Text>
         <Text>
@@ -148,9 +154,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <>
         If you have questions about these Terms, contact us at{" "}
         <ChakraLink href="mailto:support@tenantflow.dev" color="violet.400">
-          support@tenantflow
+          support@tenantflow.
         </ChakraLink>
-        .
       </>
     ),
   },
@@ -168,27 +173,7 @@ export default function TermsPage() {
         borderBottom="1px solid"
         borderColor="border.subtle"
       >
-        <Flex align="center" gap="2.5">
-          <ChakraLink href="/" display="flex" alignItems="center" gap="2.5">
-            <Box
-              w="8"
-              h="8"
-              bg="violet.600"
-              borderRadius="lg"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              fontWeight="bold"
-              color="white"
-              style={{ boxShadow: "0 0 16px rgba(139,92,246,0.4)" }}
-            >
-              T
-            </Box>
-            <Text fontSize="sm" fontWeight="bold" color="text.primary">
-              TenantFlow
-            </Text>
-          </ChakraLink>
-        </Flex>
+        <HomeLink />
         <ChakraLink
           href="/register"
           fontSize="sm"
