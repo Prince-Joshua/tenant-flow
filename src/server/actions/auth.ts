@@ -66,6 +66,7 @@ export async function registerAction(
   if (!name || !email || !password || !orgName)
     return { error: "All fields are required" };
 
+  let emailSent = true;
   try {
     await connectDB();
     const existing = await User.findOne({ email });
@@ -92,13 +93,15 @@ export async function registerAction(
       role: "owner",
       status: "active",
     });
-    await sendVerificationEmail(email, verificationToken);
+    emailSent = await sendVerificationEmail(email, verificationToken);
   } catch (err) {
     console.error("registerAction error:", err);
     return { error: "Registration failed. Please try again." };
   }
 
-  redirect("/login?registered=1");
+  redirect(
+    emailSent ? "/login?registered=1" : "/login?registered=1&emailFailed=1",
+  );
 }
 
 export async function logoutAction(): Promise<void> {

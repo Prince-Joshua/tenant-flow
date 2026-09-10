@@ -1,17 +1,22 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
-import { ChakraLink } from "@/components/shared/ChakraLink";
+import EmailFailedToast from "@/components/auth/EmailFailedToast";
 import { HomeLink } from "@/components/shared/HomeLink";
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ registered?: string; reset?: string }>;
+  searchParams: Promise<{
+    registered?: string;
+    reset?: string;
+    emailFailed?: string;
+  }>;
 }) {
-  const { registered, reset } = await searchParams;
+  const { registered, reset, emailFailed } = await searchParams;
   return (
     <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
+      <EmailFailedToast show={emailFailed === "1"} />
       <Box
         bg="bg.surface"
         border="1px solid"
@@ -23,7 +28,6 @@ export default async function LoginPage({
       >
         <Box display="flex" flexDirection="column" gap="6">
           <HomeLink />
-
           <Box>
             <Text fontSize="xl" fontWeight="bold" color="text.primary" mb="1">
               Welcome back

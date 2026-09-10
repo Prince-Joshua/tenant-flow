@@ -5,12 +5,10 @@ import { Organization } from "@/server/models";
 import PLANS from "@/server/config/plans";
 import type Stripe from "stripe";
 
-
 function getSubscriptionPeriodEnd(sub: Stripe.Subscription): Date {
   const end = sub.items.data[0]?.current_period_end;
   return new Date((end ?? Math.floor(Date.now() / 1000)) * 1000);
 }
-
 
 function getInvoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   if (invoice.parent?.type === "subscription_details") {
@@ -57,6 +55,9 @@ export async function POST(req: NextRequest) {
         org.subscriptionStatus = sub.status as typeof org.subscriptionStatus;
         org.billingCycleEnd = getSubscriptionPeriodEnd(sub);
         org.limits = PLANS[plan].limits;
+
+        org.usage.documentsGenerated = 0;
+        org.usage.apiCalls = 0;
         await org.save();
         break;
       }
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
         });
         if (!org) break;
         const sub = await stripe.subscriptions.retrieve(subscriptionId);
+
         org.usage.documentsGenerated = 0;
         org.usage.apiCalls = 0;
         org.subscriptionStatus = "active";

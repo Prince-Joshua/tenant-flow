@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Provider } from "../components/ui/provider";
 import { EmotionRegistry } from "../components/ui/emotion-registry";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "TenantFlow",
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <EmotionRegistry>
           <Provider>{children}</Provider>
+          <Toaster/>
         </EmotionRegistry>
       </body>
     </html>

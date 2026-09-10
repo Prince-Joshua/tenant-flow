@@ -10,7 +10,7 @@ const sendEmail = async (
   to: string,
   subject: string,
   html: string,
-): Promise<void> => {
+): Promise<boolean> => {
   try {
     await brevo.transactionalEmails.sendTransacEmail({
       sender: {
@@ -21,17 +21,19 @@ const sendEmail = async (
       subject,
       htmlContent: html,
     });
+    return true;
   } catch (err) {
     console.error("Email error:", err);
+    return false;
   }
 };
 
 export const sendVerificationEmail = async (
   email: string,
   token: string,
-): Promise<void> => {
+): Promise<boolean> => {
   const url = `${process.env.APP_URL}/verify-email?token=${token}`;
-  await sendEmail(
+  return sendEmail(
     email,
     "Verify your TenantFlow account",
     `
@@ -48,9 +50,9 @@ export const sendVerificationEmail = async (
 export const sendPasswordResetEmail = async (
   email: string,
   token: string,
-): Promise<void> => {
+): Promise<boolean> => {
   const url = `${process.env.APP_URL}/reset-password?token=${token}`;
-  await sendEmail(
+  return sendEmail(
     email,
     "Reset your TenantFlow password",
     `
@@ -69,9 +71,9 @@ export const sendInviteEmail = async (
   token: string,
   orgName: string,
   inviterName: string,
-): Promise<void> => {
+): Promise<boolean> => {
   const url = `${process.env.APP_URL}/invite/accept?token=${token}`;
-  await sendEmail(
+  return sendEmail(
     email,
     `You've been invited to join ${orgName} on TenantFlow`,
     `

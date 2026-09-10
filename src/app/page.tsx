@@ -1,12 +1,11 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
-import { HomeLink } from "@/components/shared/HomeLink";
 
 const features = [
   {
     icon: "✦",
     title: "AI document generation",
-    body: "Draft contracts, proposals, and reports in seconds with AI-powered writing.",
+    body: "Draft contracts, proposals, and reports in seconds with Gemini-powered writing.",
   },
   {
     icon: "◈",
@@ -32,7 +31,25 @@ export default function HomePage() {
         borderBottom="1px solid"
         borderColor="border.subtle"
       >
-        <HomeLink />
+        <Flex align="center" gap="2.5">
+          <Box
+            w="8"
+            h="8"
+            bg="violet.600"
+            borderRadius="lg"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            fontWeight="bold"
+            color="white"
+            style={{ boxShadow: "0 0 16px rgba(139,92,246,0.4)" }}
+          >
+            T
+          </Box>
+          <Text fontSize="sm" fontWeight="bold" color="text.primary">
+            TenantFlow
+          </Text>
+        </Flex>
         <Flex align="center" gap="3">
           <ChakraLink
             href="/login"
@@ -176,6 +193,29 @@ export default function HomePage() {
           </Box>
         ))}
       </Grid>
+
+      <Flex
+        as="footer"
+        justify="center"
+        align="center"
+        gap="6"
+        px="5"
+        py="6"
+        borderTop="1px solid"
+        borderColor="border.subtle"
+      >
+        <Text fontSize="xs" color="text.muted">
+          © {new Date().getFullYear()} TenantFlow LLC
+        </Text>
+        <ChakraLink
+          href="/terms"
+          fontSize="xs"
+          color="text.muted"
+          _hover={{ color: "text.secondary" }}
+        >
+          Terms of Service
+        </ChakraLink>
+      </Flex>
     </Box>
   );
 }
