@@ -104,7 +104,16 @@ export async function updateDocumentAction(
     const doc = await getAuthorizedDocument(org, user, membership, id);
 
     if (title) doc.title = title;
-    if (content) doc.content = content;
+    if (content) {
+      if (doc.pendingContent) {
+        return {
+          error:
+            "This document has a regenerated version waiting for review. Approve or discard it before editing.",
+        };
+      }
+      doc.content = content;
+      doc.tokensUsed = content.split(" ").length;
+    }
     if (status && ["draft", "active", "archived"].includes(status)) {
       doc.status = status as IDocument["status"];
     }
@@ -236,8 +245,7 @@ export async function restoreDocumentAction(formData: FormData): Promise<void> {
   redirect("/dashboard/documents?status=archived");
 }
 
-// Hard delete. Kept separate from archive — this permanently removes the
-// document and cannot be undone.
+
 export async function deleteDocumentAction(formData: FormData): Promise<void> {
   const { user, org, membership } = await requireTenant();
   const id = String(formData.get("id") || "");
@@ -267,22 +275,28 @@ export async function deleteDocumentAction(formData: FormData): Promise<void> {
   redirect("/dashboard/documents");
 }
 
+// Regeneration is staged, not applied: the new content is written to
+// `pendingContent` and the live `content` is left untouched. The user
+// reviews a diff of the two and explicitly approves or discards it via
+// approveRegenerationAction / discardRegenerationAction below.
 export async function regenerateDocumentAction(
   formData: FormData,
 ): Promise<void> {
-  const { user, org } = await requireTenant();
+  const { user, org, membership } = await requireTenant();
   const id = String(formData.get("id") || "");
 
-  await connectDB();
-  const doc = await TFDocument.findOne({ _id: id, organization: org._id });
-  if (doc) {
+  try {
+    await connectDB();
+    const doc = await getAuthorizedDocument(org, user, membership, id);
     const freshOrg = await Organization.findById(org._id);
     if (
       freshOrg &&
       freshOrg.usage.documentsGenerated < freshOrg.limits.documentsPerCycle
     ) {
-      doc.content = await generateContent(doc.prompt || doc.title);
-      doc.tokensUsed = doc.content.split(" ").length;
+      const newContent = await generateContent(doc.prompt || doc.title);
+      doc.pendingContent = newContent;
+      doc.pendingTokensUsed = newContent.split(" ").length;
+      doc.pendingAt = new Date();
       await doc.save();
       await Organization.findByIdAndUpdate(org._id, {
         $inc: { "usage.documentsGenerated": 1 },
@@ -292,9 +306,73 @@ export async function regenerateDocumentAction(
         user,
         action: "DOCUMENT_REGENERATED",
         resource: "document",
+        meta: { documentId: doc._id, pending: true },
+      });
+    }
+  } catch (err) {
+    console.error("regenerateDocumentAction error:", err);
+  }
+
+  revalidatePath("/dashboard/documents");
+  redirect(`/dashboard/documents?doc=${id}`);
+}
+
+
+export async function approveRegenerationAction(
+  formData: FormData,
+): Promise<void> {
+  const { user, org, membership } = await requireTenant();
+  const id = String(formData.get("id") || "");
+
+  try {
+    await connectDB();
+    const doc = await getAuthorizedDocument(org, user, membership, id);
+    if (doc.pendingContent) {
+      doc.content = doc.pendingContent;
+      doc.tokensUsed = doc.pendingTokensUsed ?? doc.content.split(" ").length;
+      doc.pendingContent = undefined;
+      doc.pendingTokensUsed = undefined;
+      doc.pendingAt = undefined;
+      await doc.save();
+      await logActivity({
+        org,
+        user,
+        action: "DOCUMENT_REGENERATION_APPROVED",
+        resource: "document",
         meta: { documentId: doc._id },
       });
     }
+  } catch (err) {
+    console.error("approveRegenerationAction error:", err);
+  }
+
+  revalidatePath("/dashboard/documents");
+  redirect(`/dashboard/documents?doc=${id}`);
+}
+
+
+export async function discardRegenerationAction(
+  formData: FormData,
+): Promise<void> {
+  const { user, org, membership } = await requireTenant();
+  const id = String(formData.get("id") || "");
+
+  try {
+    await connectDB();
+    const doc = await getAuthorizedDocument(org, user, membership, id);
+    doc.pendingContent = undefined;
+    doc.pendingTokensUsed = undefined;
+    doc.pendingAt = undefined;
+    await doc.save();
+    await logActivity({
+      org,
+      user,
+      action: "DOCUMENT_REGENERATION_DISCARDED",
+      resource: "document",
+      meta: { documentId: doc._id },
+    });
+  } catch (err) {
+    console.error("discardRegenerationAction error:", err);
   }
 
   revalidatePath("/dashboard/documents");

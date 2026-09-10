@@ -66,6 +66,9 @@ export interface IDocument extends Document {
   tokensUsed: number;
   status: "draft" | "active" | "archived";
   isTemplate: boolean;
+  pendingContent?: string;
+  pendingTokensUsed?: number;
+  pendingAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

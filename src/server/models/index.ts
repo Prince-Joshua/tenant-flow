@@ -118,6 +118,9 @@ const documentSchema = new Schema<IDocument>(
       default: "active",
     },
     isTemplate: { type: Boolean, default: false },
+    pendingContent: { type: String, default: null },
+    pendingTokensUsed: { type: Number, default: null },
+    pendingAt: { type: Date, default: null },
   },
   { timestamps: true },
 );

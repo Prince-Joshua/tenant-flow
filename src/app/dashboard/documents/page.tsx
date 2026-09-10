@@ -11,6 +11,8 @@ import { SubmitButton } from "@/components/shared/SubmitButton";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import GenerateDocumentForm from "@/components/documents/GenerateDocumentForm";
 import RenameDocumentForm from "@/components/documents/RenameDocumentForm";
+import EditDocumentContentForm from "@/components/documents/EditDocumentContentForm";
+import RegenerationPreview from "@/components/documents/RegenerationPreview";
 import {
   deleteDocumentAction,
   regenerateDocumentAction,
@@ -325,8 +327,11 @@ export default async function DocumentsPage({
                   borderColor="border.default"
                   color="text.secondary"
                   borderRadius="lg"
+                  disabled={Boolean(selectedDoc.pendingContent)}
                 >
-                  ↻ Regenerate
+                  {selectedDoc.pendingContent
+                    ? "↻ Regeneration pending review"
+                    : "↻ Regenerate"}
                 </SubmitButton>
               </form>
               <form action={duplicateDocumentAction}>
@@ -384,14 +389,24 @@ export default async function DocumentsPage({
               )}
             </Flex>
 
-            <Text
-              fontSize="sm"
-              color="text.secondary"
-              lineHeight="tall"
-              whiteSpace="pre-wrap"
-            >
-              {selectedDoc.content}
-            </Text>
+            {selectedDoc.pendingContent && (
+              <RegenerationPreview
+                id={selectedDoc._id}
+                currentContent={selectedDoc.content}
+                pendingContent={selectedDoc.pendingContent}
+              />
+            )}
+
+            <EditDocumentContentForm
+              id={selectedDoc._id}
+              content={selectedDoc.content}
+              disabledReason={
+                selectedDoc.pendingContent
+                  ? "Resolve the pending regeneration to edit"
+                  : undefined
+              }
+            />
+
             <Flex justify="space-between" align="center" mt="4">
               <Text fontSize="xs" color="text.muted">
                 {selectedDoc.tokensUsed} words ·{" "}
