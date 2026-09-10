@@ -6,6 +6,7 @@ import {
   IMembership,
   IDocument,
   IActivityLog,
+  IComment,
 } from "../types";
 
 const userSchema = new Schema<IUser>(
@@ -121,6 +122,17 @@ const documentSchema = new Schema<IDocument>(
     pendingContent: { type: String, default: null },
     pendingTokensUsed: { type: Number, default: null },
     pendingAt: { type: Date, default: null },
+    collaborators: {
+      type: [
+        {
+          user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+          role: { type: String, enum: ["view", "edit"], default: "view" },
+        },
+      ],
+      default: [],
+    },
+    isPublic: { type: Boolean, default: false },
+    publicToken: { type: String, unique: true, sparse: true },
   },
   { timestamps: true },
 );
@@ -148,3 +160,26 @@ const activityLogSchema = new Schema<IActivityLog>(
 export const ActivityLog =
   (mongoose.models.ActivityLog as mongoose.Model<IActivityLog>) ||
   mongoose.model<IActivityLog>("ActivityLog", activityLogSchema);
+
+const commentSchema = new Schema<IComment>(
+  {
+    document: { type: Schema.Types.ObjectId, ref: "Document", required: true },
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
+    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    // Denormalized so the comment still shows a name even if the author
+    // is later removed from the org — same pattern as ActivityLog.userName.
+    authorName: { type: String, required: true },
+    body: { type: String, required: true, trim: true, maxlength: 2000 },
+  },
+  { timestamps: true },
+);
+
+commentSchema.index({ document: 1, createdAt: 1 });
+
+export const Comment =
+  (mongoose.models.Comment as mongoose.Model<IComment>) ||
+  mongoose.model<IComment>("Comment", commentSchema);

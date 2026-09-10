@@ -24,6 +24,11 @@ import {
 } from "@/server/actions/documents";
 import { inputStyle, nativeSelectCss } from "@/lib/inputStyles";
 import DocumentExportActions from "@/components/documents/DocumentExportActions";
+import ShareDocumentPanel from "@/components/documents/ShareDocumentPanel";
+import CommentsPanel from "@/components/documents/CommentsPanel";
+import SendDocumentEmailPanel from "@/components/documents/SendDocumentEmailPanel";
+import { getOrgMembers } from "@/server/data/org";
+import { getComments } from "@/server/data/comments";
 
 const STATUS_FILTERS = [
   { value: "", label: "All (excl. archived)" },
@@ -51,7 +56,7 @@ export default async function DocumentsPage({
   }>;
 }) {
   const resolvedSearchParams = await searchParams;
-  const { org } = await requireTenant();
+  const { user, org, membership } = await requireTenant();
   const page = Number(resolvedSearchParams.page) || 1;
   const search = resolvedSearchParams.search || "";
   const status = (resolvedSearchParams.status || "") as
@@ -65,17 +70,35 @@ export default async function DocumentsPage({
     | "title_asc"
     | "title_desc";
 
-  const [{ documents, pagination }, selected, templates] = await Promise.all([
+  const [
+    { documents, pagination },
+    selected,
+    templates,
+    orgMembersRaw,
+    commentsRaw,
+  ] = await Promise.all([
     getDocuments(org, { page, search, status, sort }),
     resolvedSearchParams.doc
       ? getDocument(org, resolvedSearchParams.doc)
       : Promise.resolve(null),
     getTemplates(org),
+    resolvedSearchParams.doc ? getOrgMembers(org) : Promise.resolve([]),
+    resolvedSearchParams.doc
+      ? getComments(org, resolvedSearchParams.doc)
+      : Promise.resolve([]),
   ]);
 
   const docs = JSON.parse(JSON.stringify(documents));
   const selectedDoc = selected ? JSON.parse(JSON.stringify(selected)) : null;
   const templateOptions = JSON.parse(JSON.stringify(templates));
+  const orgMembers = JSON.parse(JSON.stringify(orgMembersRaw));
+  const comments = JSON.parse(JSON.stringify(commentsRaw));
+  const canManageSharingForDoc = Boolean(
+    selectedDoc &&
+    (selectedDoc.createdBy?._id === user._id.toString() ||
+      ["owner", "admin"].includes(membership.role)),
+  );
+  const canModerateComments = canManageSharingForDoc;
   const qs = (extra: Record<string, string | number>) => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
@@ -392,6 +415,26 @@ export default async function DocumentsPage({
               <DocumentExportActions
                 title={selectedDoc.title}
                 content={selectedDoc.content}
+              />
+
+              <SendDocumentEmailPanel documentId={selectedDoc._id} />
+
+              {canManageSharingForDoc && (
+                <ShareDocumentPanel
+                  documentId={selectedDoc._id}
+                  creatorId={selectedDoc.createdBy?._id}
+                  collaborators={selectedDoc.collaborators || []}
+                  orgMembers={orgMembers}
+                  isPublic={Boolean(selectedDoc.isPublic)}
+                  publicToken={selectedDoc.publicToken}
+                />
+              )}
+
+              <CommentsPanel
+                documentId={selectedDoc._id}
+                comments={comments}
+                currentUserId={user._id.toString()}
+                canModerate={canModerateComments}
               />
             </Flex>
 

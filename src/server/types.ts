@@ -69,6 +69,9 @@ export interface IDocument extends Document {
   pendingContent?: string;
   pendingTokensUsed?: number;
   pendingAt?: Date;
+  collaborators: { user: Types.ObjectId; role: "view" | "edit" }[];
+  isPublic: boolean;
+  publicToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,6 +84,17 @@ export interface IActivityLog extends Document {
   action: string;
   resource?: string;
   meta?: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IComment extends Document {
+  _id: Types.ObjectId;
+  document: Types.ObjectId;
+  organization: Types.ObjectId;
+  author: Types.ObjectId;
+  authorName: string;
+  body: string;
   createdAt: Date;
   updatedAt: Date;
 }

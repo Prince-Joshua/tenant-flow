@@ -86,3 +86,40 @@ export const sendInviteEmail = async (
   `,
   );
 };
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+export const sendDocumentEmail = async (
+  to: string,
+  senderName: string,
+  documentTitle: string,
+  documentContent: string,
+  message?: string,
+): Promise<boolean> => {
+  const safeTitle = escapeHtml(documentTitle);
+  const safeContent = escapeHtml(documentContent).replace(/\n/g, "<br/>");
+  const safeMessage = message ? escapeHtml(message) : "";
+
+  return sendEmail(
+    to,
+    `${senderName} shared a document with you: ${documentTitle}`,
+    `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+      <h2 style="margin-bottom:4px">${safeTitle}</h2>
+      <p style="color:#555">Shared by <strong>${escapeHtml(senderName)}</strong> via TenantFlow.</p>
+      ${
+        safeMessage
+          ? `<div style="padding:12px 16px;background:#f4f4f5;border-radius:8px;margin:16px 0;color:#333">${safeMessage.replace(/\n/g, "<br/>")}</div>`
+          : ""
+      }
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0" />
+      <div style="color:#374151;line-height:1.6;font-size:0.95rem;white-space:pre-wrap">${safeContent}</div>
+    </div>
+  `,
+  );
+};

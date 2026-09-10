@@ -1,5 +1,10 @@
 import "server-only";
-import type { IUser, IOrganization, IMembership } from "@/server/types";
+import type {
+  IUser,
+  IOrganization,
+  IMembership,
+  IDocument,
+} from "@/server/types";
 import AppError from "@/server/utils/appError";
 
 export function requireSuperAdminRole(user: IUser): void {
@@ -32,4 +37,27 @@ export function checkUsage(org: IOrganization, resource: "documents"): void {
       "PLAN_LIMIT_REACHED",
     );
   }
+}
+
+export function canEditDocument(
+  doc: IDocument,
+  user: IUser,
+  membership: IMembership,
+): boolean {
+  const isCreator = doc.createdBy.toString() === user._id.toString();
+  const isPrivileged = ["owner", "admin"].includes(membership.role);
+  const isEditCollaborator = doc.collaborators?.some(
+    (c) => c.user.toString() === user._id.toString() && c.role === "edit",
+  );
+  return isCreator || isPrivileged || Boolean(isEditCollaborator);
+}
+
+export function canManageDocumentSharing(
+  doc: IDocument,
+  user: IUser,
+  membership: IMembership,
+): boolean {
+  const isCreator = doc.createdBy.toString() === user._id.toString();
+  const isPrivileged = ["owner", "admin"].includes(membership.role);
+  return isCreator || isPrivileged;
 }

@@ -57,7 +57,9 @@ export async function getDocument(org: IOrganization, id: string) {
     return await TFDocument.findOne({
       _id: id,
       organization: org._id,
-    }).populate("createdBy", "name email");
+    })
+      .populate("createdBy", "name email")
+      .populate("collaborators.user", "name email");
   } catch {
     return null;
   }
@@ -68,4 +70,21 @@ export async function getTemplates(org: IOrganization) {
   return TFDocument.find({ organization: org._id, isTemplate: true })
     .sort({ title: 1 })
     .populate("createdBy", "name email");
+}
+
+// Deliberately not scoped to an organization or authenticated user — this
+// is the lookup behind the public share link. It only ever returns a
+// document that has been explicitly marked isPublic, and only exposes the
+// fields the public page actually renders.
+export async function getPublicDocument(token: string) {
+  if (!token) return null;
+  await connectDB();
+  try {
+    return await TFDocument.findOne({
+      publicToken: token,
+      isPublic: true,
+    }).select("title content updatedAt");
+  } catch {
+    return null;
+  }
 }
