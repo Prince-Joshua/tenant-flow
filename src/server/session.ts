@@ -1,37 +1,28 @@
-import 'server-only';
-import { cookies } from 'next/headers';
-import { SignJWT, jwtVerify } from 'jose';
+import "server-only";
+import { cookies } from "next/headers";
+import { SignJWT, jwtVerify } from "jose";
 
-// Cookie-based sessions replace the old access/refresh JWT pair that lived
-// in Redux + localStorage and was sent as a `Bearer` header. There's now a
-// single httpOnly, signed session cookie the browser sends automatically;
-// nothing session-related is readable or settable from client JS.
-//
-// We use `jose` instead of `jsonwebtoken` because `jose` runs on the Edge
-// runtime, which lets `middleware.ts` verify the cookie too.
-
-const SESSION_COOKIE = 'tf_session';
-const ORG_COOKIE = 'tf_org';
+const SESSION_COOKIE = "tf_session";
+const ORG_COOKIE = "tf_org";
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30; // 30 days, sliding
 
 function getSecretKey(): Uint8Array {
   const secret = process.env.SESSION_SECRET;
-  if (!secret) throw new Error('SESSION_SECRET is not set');
+  if (!secret) throw new Error("SESSION_SECRET is not set");
   return new TextEncoder().encode(secret);
 }
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  path: '/',
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
   maxAge: SESSION_DURATION_SECONDS,
 };
 
-/** Signs a session token for `userId` and sets it as an httpOnly cookie. */
 export async function createSession(userId: string): Promise<void> {
   const token = await new SignJWT({ sub: userId })
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
     .sign(getSecretKey());
@@ -40,27 +31,24 @@ export async function createSession(userId: string): Promise<void> {
   store.set(SESSION_COOKIE, token, cookieOptions);
 }
 
-/** Verifies the session cookie (if any) and returns the user id it encodes. */
 export async function getSessionUserId(): Promise<string | null> {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
-    return typeof payload.sub === 'string' ? payload.sub : null;
+    return typeof payload.sub === "string" ? payload.sub : null;
   } catch {
     return null;
   }
 }
 
-/** Clears both the session cookie and the active-org cookie (full sign-out). */
 export async function destroySession(): Promise<void> {
   const store = await cookies();
   store.delete(SESSION_COOKIE);
   store.delete(ORG_COOKIE);
 }
 
-/** Remembers which org the user is currently working in, across requests. */
 export async function setActiveOrgCookie(slug: string): Promise<void> {
   const store = await cookies();
   store.set(ORG_COOKIE, slug, cookieOptions);

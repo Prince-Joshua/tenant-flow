@@ -8,7 +8,6 @@ import {
   IActivityLog,
 } from "../types";
 
-// ─── User ────────────────────────────────────────────────────────────────────
 const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
@@ -38,7 +37,6 @@ export const User =
   (mongoose.models.User as mongoose.Model<IUser>) ||
   mongoose.model<IUser>("User", userSchema);
 
-// ─── Organization ─────────────────────────────────────────────────────────────
 const organizationSchema = new Schema<IOrganization>(
   {
     name: { type: String, required: true, trim: true },
@@ -73,7 +71,6 @@ export const Organization =
   (mongoose.models.Organization as mongoose.Model<IOrganization>) ||
   mongoose.model<IOrganization>("Organization", organizationSchema);
 
-// ─── Membership ───────────────────────────────────────────────────────────────
 const membershipSchema = new Schema<IMembership>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -103,7 +100,6 @@ export const Membership =
   (mongoose.models.Membership as mongoose.Model<IMembership>) ||
   mongoose.model<IMembership>("Membership", membershipSchema);
 
-// ─── Document ─────────────────────────────────────────────────────────────────
 const documentSchema = new Schema<IDocument>(
   {
     title: { type: String, required: true, trim: true },
@@ -124,7 +120,6 @@ export const TFDocument =
   (mongoose.models.Document as mongoose.Model<IDocument>) ||
   mongoose.model<IDocument>("Document", documentSchema);
 
-// ─── ActivityLog ──────────────────────────────────────────────────────────────
 const activityLogSchema = new Schema<IActivityLog>(
   {
     organization: {

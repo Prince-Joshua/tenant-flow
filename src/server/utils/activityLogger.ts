@@ -1,5 +1,5 @@
-import { ActivityLog } from '../models';
-import { IOrganization, IUser } from '../types';
+import { ActivityLog } from "../models";
+import { IOrganization, IUser } from "../types";
 
 interface LogParams {
   org: IOrganization;
@@ -9,7 +9,13 @@ interface LogParams {
   meta?: Record<string, unknown>;
 }
 
-const logActivity = async ({ org, user, action, resource, meta }: LogParams): Promise<void> => {
+const logActivity = async ({
+  org,
+  user,
+  action,
+  resource,
+  meta,
+}: LogParams): Promise<void> => {
   try {
     await ActivityLog.create({
       organization: org._id,
@@ -20,7 +26,7 @@ const logActivity = async ({ org, user, action, resource, meta }: LogParams): Pr
       meta,
     });
   } catch (err) {
-    console.error('Activity log error:', err);
+    console.error("Activity log error:", err);
   }
 };
 

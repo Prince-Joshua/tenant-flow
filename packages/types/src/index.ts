@@ -1,16 +1,20 @@
-// ─── Shared enums / literal unions ──────────────────────────────────────────
-// These are the single source of truth for status/role strings. Both the
-// Mongoose schemas (server) and the UI (client) import these instead of
-// redeclaring the same string literals in two places.
-export type UserRole = 'user' | 'superadmin';
-export type Plan = 'free' | 'pro' | 'enterprise';
-export type SubscriptionStatus = 'active' | 'inactive' | 'past_due' | 'canceled' | 'trialing';
-export type MembershipRole = 'owner' | 'admin' | 'member';
-export type MembershipStatus = 'active' | 'invited' | 'suspended';
-export type DocumentTone = 'professional' | 'casual' | 'persuasive' | 'technical';
-export type DocumentLength = 'short' | 'medium' | 'long';
+export type UserRole = "user" | "superadmin";
+export type Plan = "free" | "pro" | "enterprise";
+export type SubscriptionStatus =
+  | "active"
+  | "inactive"
+  | "past_due"
+  | "canceled"
+  | "trialing";
+export type MembershipRole = "owner" | "admin" | "member";
+export type MembershipStatus = "active" | "invited" | "suspended";
+export type DocumentTone =
+  | "professional"
+  | "casual"
+  | "persuasive"
+  | "technical";
+export type DocumentLength = "short" | "medium" | "long";
 
-// ─── Domain DTOs (the shape data takes over the wire) ───────────────────────
 export interface Usage {
   documentsGenerated: number;
   apiCalls: number;
