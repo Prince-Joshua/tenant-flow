@@ -112,6 +112,12 @@ const documentSchema = new Schema<IDocument>(
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     prompt: String,
     tokensUsed: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ["draft", "active", "archived"],
+      default: "active",
+    },
+    isTemplate: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

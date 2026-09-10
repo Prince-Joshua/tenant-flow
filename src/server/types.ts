@@ -64,6 +64,8 @@ export interface IDocument extends Document {
   createdBy: Types.ObjectId;
   prompt?: string;
   tokensUsed: number;
+  status: "draft" | "active" | "archived";
+  isTemplate: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

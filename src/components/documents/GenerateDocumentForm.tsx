@@ -9,7 +9,16 @@ import { inputStyle, nativeSelectCss } from '@/lib/inputStyles';
 const TONES = ['professional', 'casual', 'persuasive', 'technical'];
 const LENGTHS = ['short', 'medium', 'long'];
 
-export default function GenerateDocumentForm() {
+interface TemplateOption {
+  _id: string;
+  title: string;
+}
+
+export default function GenerateDocumentForm({
+  templates = [],
+}: {
+  templates?: TemplateOption[];
+}) {
   const [state, formAction] = useActionState(generateDocumentAction, undefined);
 
   return (
@@ -38,7 +47,22 @@ export default function GenerateDocumentForm() {
             </select>
           </Box>
         </Grid>
-        <Flex gap="3" justify="flex-end">
+        {templates.length > 0 && (
+          <Box>
+            <Text fontSize="sm" fontWeight="medium" color="text.secondary" mb="1.5">Template (optional)</Text>
+            <select name="templateId" defaultValue="" style={{ ...nativeSelectCss, width: '100%' }}>
+              <option value="" style={{ background: '#111827' }}>No template</option>
+              {templates.map((t) => (
+                <option key={t._id} value={t._id} style={{ background: '#111827' }}>{t.title}</option>
+              ))}
+            </select>
+          </Box>
+        )}
+        <Flex gap="3" justify="space-between" align="center">
+          <Text as="label" fontSize="sm" color="text.secondary" display="flex" alignItems="center" gap="2">
+            <input type="checkbox" name="asDraft" />
+            Save as draft (don&apos;t mark as final)
+          </Text>
           <SubmitButton size="sm" bg="violet.600" color="white" borderRadius="lg" _hover={{ bg: 'violet.500' }}>Generate</SubmitButton>
         </Flex>
       </Stack>

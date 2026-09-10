@@ -17,8 +17,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <EmotionRegistry>
-          <Provider>{children}</Provider>
-          <Toaster/>
+          <Provider>
+            <Toaster />
+            {children}
+          </Provider>
         </EmotionRegistry>
       </body>
     </html>

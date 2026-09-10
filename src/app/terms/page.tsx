@@ -9,7 +9,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         These Terms of Service (&quot;Terms&quot;) are an agreement between you
-        (&quot;you&quot; or &quot;User&quot;) and TenantFlow LLC
+        (&quot;you&quot; or &quot;User&quot;) and TenantFlow
         (&quot;TenantFlow,&quot; &quot;we,&quot; &quot;us,&quot; or
         &quot;our&quot;), governing your access to and use of the TenantFlow
         application, including our website, dashboard, APIs, and any related
@@ -125,9 +125,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <>
         The Service is provided &quot;as is&quot; and &quot;as available&quot;
         without warranties of any kind, whether express or implied. To the
-        fullest extent permitted by law, TenantFlow LLC will not be liable for
-        any indirect, incidental, special, or consequential damages, or for any
-        loss of data, revenue, or profits, arising from your use of the Service.
+        fullest extent permitted by law, TenantFlow will not be liable for any
+        indirect, incidental, special, or consequential damages, or for any loss
+        of data, revenue, or profits, arising from your use of the Service.
       </>
     ),
   },
@@ -143,23 +143,12 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    title: "10. Governing law",
-    body: (
-      <>
-        These Terms are governed by and construed in accordance with the laws of
-        the Federal Republic of Nigeria, without regard to its conflict-of-law
-        provisions. Any disputes arising from these Terms or the Service will be
-        subject to the exclusive jurisdiction of the courts of Nigeria.
-      </>
-    ),
-  },
-  {
-    title: "11. Contact",
+    title: "10. Contact",
     body: (
       <>
         If you have questions about these Terms, contact us at{" "}
         <ChakraLink href="mailto:support@tenantflow.dev" color="violet.400">
-          support@tenantflow.dev
+          support@tenantflow
         </ChakraLink>
         .
       </>
