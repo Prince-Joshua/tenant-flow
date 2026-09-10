@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import {
   addCollaboratorAction,
   removeCollaboratorAction,
@@ -11,6 +11,7 @@ import {
 } from "@/server/actions/documents";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { nativeSelectCss } from "@/lib/inputStyles";
+import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
 
 type OrgMember = {
   _id: string;
@@ -279,16 +280,20 @@ export default function ShareDocumentPanel({
   isPublic: boolean;
   publicToken?: string;
 }) {
+  const { isOpen, toggle, close } = useDocumentActionMenu("share");
   const collaboratorIds = new Set(collaborators.map((c) => c.user._id));
   const available = orgMembers.filter(
     (m) => m.user._id !== creatorId && !collaboratorIds.has(m.user._id),
   );
 
   return (
-    <Box as="details" position="relative">
-      <Box
-        as="summary"
-        listStyleType="none"
+    <Box position="relative">
+      <Button
+        onClick={toggle}
+        aria-expanded={isOpen}
+        variant="ghost"
+        display="inline-flex"
+        alignItems="center"
         cursor="pointer"
         fontSize="sm"
         fontWeight="semibold"
@@ -299,57 +304,76 @@ export default function ShareDocumentPanel({
         borderRadius="lg"
         px="4"
         py="1.5"
+        h="auto"
         _hover={{ borderColor: "violet.500", color: "text.primary" }}
       >
         👥 Share
-      </Box>
-      <Box
-        position="absolute"
-        top="calc(100% + 6px)"
-        left="0"
-        minW="320px"
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.default"
-        borderRadius="lg"
-        p="3"
-        boxShadow="0 8px 24px rgba(0,0,0,0.35)"
-        zIndex="10"
-      >
-        <Text fontSize="xs" fontWeight="semibold" color="text.muted" mb="2">
-          People with access
-        </Text>
-        {collaborators.length === 0 ? (
-          <Text fontSize="xs" color="text.muted" mb="3">
-            Only the document owner and org admins can access this so far.
-          </Text>
-        ) : (
-          <Box mb="3">
-            {collaborators.map((c) => (
-              <CollaboratorRow
-                key={c.user._id}
-                documentId={documentId}
-                collaborator={c}
-              />
-            ))}
-          </Box>
-        )}
-        <Text fontSize="xs" fontWeight="semibold" color="text.muted" mb="2">
-          Add someone
-        </Text>
-        <AddCollaboratorForm documentId={documentId} available={available} />
-
-        <Box mt="4" pt="3" borderTop="1px solid" borderColor="border.subtle">
+      </Button>
+      {isOpen && (
+        <Box
+          position="absolute"
+          top="calc(100% + 6px)"
+          left="0"
+          minW="320px"
+          bg="bg.surface"
+          border="1px solid"
+          borderColor="border.default"
+          borderRadius="lg"
+          p="3"
+          boxShadow="0 8px 24px rgba(0,0,0,0.35)"
+          zIndex="10"
+        >
+          <Flex justify="flex-end" mb="1">
+            <Button
+              size="2xs"
+              variant="ghost"
+              onClick={close}
+              fontSize="xs"
+              color="text.muted"
+              px="1"
+              minW="auto"
+              h="auto"
+              _hover={{ color: "text.primary", bg: "bg.elevated" }}
+              aria-label="Close share panel"
+            >
+              ✕
+            </Button>
+          </Flex>
           <Text fontSize="xs" fontWeight="semibold" color="text.muted" mb="2">
-            Public link
+            People with access
           </Text>
-          <PublicLinkSection
-            documentId={documentId}
-            isPublic={isPublic}
-            publicToken={publicToken}
-          />
+          {collaborators.length === 0 ? (
+            <Text fontSize="xs" color="text.muted" mb="3">
+              Only the document owner and org admins can access this so far.
+            </Text>
+          ) : (
+            <Box mb="3">
+              {collaborators.map((c) => (
+                <CollaboratorRow
+                  key={c.user._id}
+                  documentId={documentId}
+                  collaborator={c}
+                />
+              ))}
+            </Box>
+          )}
+          <Text fontSize="xs" fontWeight="semibold" color="text.muted" mb="2">
+            Add someone
+          </Text>
+          <AddCollaboratorForm documentId={documentId} available={available} />
+
+          <Box mt="4" pt="3" borderTop="1px solid" borderColor="border.subtle">
+            <Text fontSize="xs" fontWeight="semibold" color="text.muted" mb="2">
+              Public link
+            </Text>
+            <PublicLinkSection
+              documentId={documentId}
+              isPublic={isPublic}
+              publicToken={publicToken}
+            />
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 }

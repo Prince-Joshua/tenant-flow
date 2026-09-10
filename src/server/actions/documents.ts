@@ -11,6 +11,7 @@ import {
   checkUsage,
   canEditDocument,
   canManageDocumentSharing,
+  canApproveDocument,
 } from "@/server/utils/roles";
 import { buildPrompt, generateContent } from "@/server/genai";
 import { sendDocumentEmail } from "@/server/utils/email";
@@ -670,4 +671,119 @@ export async function sendDocumentByEmailAction(
   }
 
   return { success: `Sent to ${recipientEmail}` };
+}
+
+export async function submitForApprovalAction(
+  formData: FormData,
+): Promise<void> {
+  const { user, org, membership } = await requireTenant();
+  const id = String(formData.get("id") || "");
+
+  try {
+    await connectDB();
+    const doc = await getAuthorizedDocument(org, user, membership, id);
+    if (doc.approvalStatus === "draft" || doc.approvalStatus === "rejected") {
+      doc.approvalStatus = "review";
+      doc.approvalHistory.push({
+        action: "submitted",
+        by: user._id,
+        byName: user.name,
+        at: new Date(),
+      });
+      await doc.save();
+      await logActivity({
+        org,
+        user,
+        action: "DOCUMENT_SUBMITTED_FOR_APPROVAL",
+        resource: "document",
+        meta: { documentId: doc._id },
+      });
+    }
+  } catch (err) {
+    console.error("submitForApprovalAction error:", err);
+  }
+
+  revalidatePath("/dashboard/documents");
+  redirect(`/dashboard/documents?doc=${id}`);
+}
+
+export async function approveDocumentAction(
+  formData: FormData,
+): Promise<void> {
+  const { user, org, membership } = await requireTenant();
+  const id = String(formData.get("id") || "");
+
+  try {
+    await connectDB();
+    const doc = await TFDocument.findOne({ _id: id, organization: org._id });
+    if (!doc) throw new AppError("Document not found", 404, "NOT_FOUND");
+    if (!canApproveDocument(doc, user, membership))
+      throw new AppError("Cannot approve this document", 403, "FORBIDDEN");
+
+    if (doc.approvalStatus === "review") {
+      doc.approvalStatus = "approved";
+      doc.approvalHistory.push({
+        action: "approved",
+        by: user._id,
+        byName: user.name,
+        at: new Date(),
+      });
+      await doc.save();
+      await logActivity({
+        org,
+        user,
+        action: "DOCUMENT_APPROVED",
+        resource: "document",
+        meta: { documentId: doc._id },
+      });
+    }
+  } catch (err) {
+    console.error("approveDocumentAction error:", err);
+  }
+
+  revalidatePath("/dashboard/documents");
+  redirect(`/dashboard/documents?doc=${id}`);
+}
+
+export async function rejectDocumentAction(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { user, org, membership } = await requireTenant();
+  const id = String(formData.get("id") || "");
+  const reason = String(formData.get("reason") || "").trim();
+
+  try {
+    await connectDB();
+    const doc = await TFDocument.findOne({ _id: id, organization: org._id });
+    if (!doc) throw new AppError("Document not found", 404, "NOT_FOUND");
+    if (!canApproveDocument(doc, user, membership))
+      throw new AppError("Cannot reject this document", 403, "FORBIDDEN");
+    if (doc.approvalStatus !== "review")
+      return { error: "This document isn't awaiting approval" };
+
+    doc.approvalStatus = "rejected";
+    doc.approvalHistory.push({
+      action: "rejected",
+      by: user._id,
+      byName: user.name,
+      comment: reason || undefined,
+      at: new Date(),
+    });
+    await doc.save();
+    await logActivity({
+      org,
+      user,
+      action: "DOCUMENT_REJECTED",
+      resource: "document",
+      meta: { documentId: doc._id, reason: reason || undefined },
+    });
+  } catch (err) {
+    return {
+      error: err instanceof AppError ? err.message : "Failed to reject document",
+    };
+  }
+
+  revalidatePath("/dashboard/documents");
+  return { success: "Document sent back for revision" };
 }

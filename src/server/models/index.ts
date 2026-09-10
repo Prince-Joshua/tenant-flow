@@ -133,6 +133,27 @@ const documentSchema = new Schema<IDocument>(
     },
     isPublic: { type: Boolean, default: false },
     publicToken: { type: String, unique: true, sparse: true },
+    approvalStatus: {
+      type: String,
+      enum: ["draft", "review", "approved", "rejected"],
+      default: "draft",
+    },
+    approvalHistory: {
+      type: [
+        {
+          action: {
+            type: String,
+            enum: ["submitted", "approved", "rejected"],
+            required: true,
+          },
+          by: { type: Schema.Types.ObjectId, ref: "User", required: true },
+          byName: String,
+          comment: String,
+          at: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true },
 );

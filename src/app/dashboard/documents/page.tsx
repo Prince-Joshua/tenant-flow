@@ -26,7 +26,9 @@ import { inputStyle, nativeSelectCss } from "@/lib/inputStyles";
 import DocumentExportActions from "@/components/documents/DocumentExportActions";
 import ShareDocumentPanel from "@/components/documents/ShareDocumentPanel";
 import CommentsPanel from "@/components/documents/CommentsPanel";
+import ApprovalPanel from "@/components/documents/ApprovalPanel";
 import SendDocumentEmailPanel from "@/components/documents/SendDocumentEmailPanel";
+import { DocumentActionsMenuProvider } from "@/components/documents/DocumentActionsMenuContext";
 import { getOrgMembers } from "@/server/data/org";
 import { getComments } from "@/server/data/comments";
 
@@ -99,6 +101,17 @@ export default async function DocumentsPage({
       ["owner", "admin"].includes(membership.role)),
   );
   const canModerateComments = canManageSharingForDoc;
+  const canApproveForDoc = Boolean(
+    selectedDoc && ["owner", "admin"].includes(membership.role),
+  );
+  const canSubmitForApprovalDoc = Boolean(
+    selectedDoc &&
+    (selectedDoc.createdBy?._id === user._id.toString() ||
+      ["owner", "admin"].includes(membership.role) ||
+      selectedDoc.collaborators?.some(
+        (c: any) => c.user?._id === user._id.toString() && c.role === "edit",
+      )),
+  );
   const qs = (extra: Record<string, string | number>) => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
@@ -412,30 +425,40 @@ export default async function DocumentsPage({
                 </form>
               )}
 
-              <DocumentExportActions
-                title={selectedDoc.title}
-                content={selectedDoc.content}
-              />
-
-              <SendDocumentEmailPanel documentId={selectedDoc._id} />
-
-              {canManageSharingForDoc && (
-                <ShareDocumentPanel
-                  documentId={selectedDoc._id}
-                  creatorId={selectedDoc.createdBy?._id}
-                  collaborators={selectedDoc.collaborators || []}
-                  orgMembers={orgMembers}
-                  isPublic={Boolean(selectedDoc.isPublic)}
-                  publicToken={selectedDoc.publicToken}
+              <DocumentActionsMenuProvider>
+                <DocumentExportActions
+                  title={selectedDoc.title}
+                  content={selectedDoc.content}
                 />
-              )}
 
-              <CommentsPanel
-                documentId={selectedDoc._id}
-                comments={comments}
-                currentUserId={user._id.toString()}
-                canModerate={canModerateComments}
-              />
+                <SendDocumentEmailPanel documentId={selectedDoc._id} />
+
+                {canManageSharingForDoc && (
+                  <ShareDocumentPanel
+                    documentId={selectedDoc._id}
+                    creatorId={selectedDoc.createdBy?._id}
+                    collaborators={selectedDoc.collaborators || []}
+                    orgMembers={orgMembers}
+                    isPublic={Boolean(selectedDoc.isPublic)}
+                    publicToken={selectedDoc.publicToken}
+                  />
+                )}
+
+                <CommentsPanel
+                  documentId={selectedDoc._id}
+                  comments={comments}
+                  currentUserId={user._id.toString()}
+                  canModerate={canModerateComments}
+                />
+
+                <ApprovalPanel
+                  documentId={selectedDoc._id}
+                  approvalStatus={selectedDoc.approvalStatus || "draft"}
+                  approvalHistory={selectedDoc.approvalHistory || []}
+                  canSubmit={canSubmitForApprovalDoc}
+                  canApprove={canApproveForDoc}
+                />
+              </DocumentActionsMenuProvider>
             </Flex>
 
             {selectedDoc.pendingContent && (

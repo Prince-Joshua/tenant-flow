@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
 
 const PDF_MARGIN = 15;
 const PDF_LINE_HEIGHT = 7;
@@ -13,6 +14,7 @@ export default function DocumentExportActions({
   title: string;
   content: string;
 }) {
+  const { isOpen, toggle, close } = useDocumentActionMenu("export");
   const [copied, setCopied] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
@@ -22,6 +24,7 @@ export default function DocumentExportActions({
       await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
+      close();
     } catch (err) {
       console.error("Copy to clipboard failed:", err);
     }
@@ -58,6 +61,7 @@ export default function DocumentExportActions({
       }
 
       doc.save(`${title || "document"}.pdf`);
+      close();
     } catch (err) {
       console.error("PDF export failed:", err);
     } finally {
@@ -105,6 +109,7 @@ export default function DocumentExportActions({
       link.download = `${title || "document"}.docx`;
       link.click();
       URL.revokeObjectURL(url);
+      close();
     } catch (err) {
       console.error("Word export failed:", err);
     } finally {
@@ -127,10 +132,13 @@ export default function DocumentExportActions({
   };
 
   return (
-    <Box as="details" position="relative">
-      <Box
-        as="summary"
-        listStyleType="none"
+    <Box position="relative">
+      <Button
+        onClick={toggle}
+        aria-expanded={isOpen}
+        variant="ghost"
+        display="inline-flex"
+        alignItems="center"
         cursor="pointer"
         fontSize="sm"
         fontWeight="semibold"
@@ -141,43 +149,62 @@ export default function DocumentExportActions({
         borderRadius="lg"
         px="4"
         py="1.5"
+        h="auto"
         _hover={{ borderColor: "violet.500", color: "text.primary" }}
       >
         ⬇ Export
-      </Box>
-      <Box
-        position="absolute"
-        top="calc(100% + 6px)"
-        right="0"
-        minW="180px"
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.default"
-        borderRadius="lg"
-        p="1"
-        boxShadow="0 8px 24px rgba(0,0,0,0.35)"
-        zIndex="10"
-      >
-        <Text {...menuItemStyle} onClick={handleCopy}>
-          {copied ? "✓ Copied to clipboard" : "⧉ Copy to clipboard"}
-        </Text>
-        <Text
-          {...menuItemStyle}
-          onClick={handleDownloadPdf}
-          opacity={exportingPdf ? 0.5 : 1}
-          pointerEvents={exportingPdf ? "none" : "auto"}
+      </Button>
+      {isOpen && (
+        <Box
+          position="absolute"
+          top="calc(100% + 6px)"
+          right="0"
+          minW="180px"
+          bg="bg.surface"
+          border="1px solid"
+          borderColor="border.default"
+          borderRadius="lg"
+          p="1"
+          boxShadow="0 8px 24px rgba(0,0,0,0.35)"
+          zIndex="10"
         >
-          {exportingPdf ? "Generating PDF…" : "⬇ Download as PDF"}
-        </Text>
-        <Text
-          {...menuItemStyle}
-          onClick={handleDownloadWord}
-          opacity={exportingWord ? 0.5 : 1}
-          pointerEvents={exportingWord ? "none" : "auto"}
-        >
-          {exportingWord ? "Generating Word doc…" : "⬇ Download as Word"}
-        </Text>
-      </Box>
+          <Flex justify="flex-end" mb="1">
+            <Button
+              size="2xs"
+              variant="ghost"
+              onClick={close}
+              fontSize="xs"
+              color="text.muted"
+              px="1"
+              minW="auto"
+              h="auto"
+              _hover={{ color: "text.primary", bg: "bg.elevated" }}
+              aria-label="Close export menu"
+            >
+              ✕
+            </Button>
+          </Flex>
+          <Text {...menuItemStyle} onClick={handleCopy}>
+            {copied ? "✓ Copied to clipboard" : "⧉ Copy to clipboard"}
+          </Text>
+          <Text
+            {...menuItemStyle}
+            onClick={handleDownloadPdf}
+            opacity={exportingPdf ? 0.5 : 1}
+            pointerEvents={exportingPdf ? "none" : "auto"}
+          >
+            {exportingPdf ? "Generating PDF…" : "⬇ Download as PDF"}
+          </Text>
+          <Text
+            {...menuItemStyle}
+            onClick={handleDownloadWord}
+            opacity={exportingWord ? 0.5 : 1}
+            pointerEvents={exportingWord ? "none" : "auto"}
+          >
+            {exportingWord ? "Generating Word doc…" : "⬇ Download as Word"}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 }

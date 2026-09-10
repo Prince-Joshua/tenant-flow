@@ -1,5 +1,6 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
+import { HomeLink } from "@/components/shared/HomeLink";
 
 const features = [
   {
@@ -31,25 +32,7 @@ export default function HomePage() {
         borderBottom="1px solid"
         borderColor="border.subtle"
       >
-        <Flex align="center" gap="2.5">
-          <Box
-            w="8"
-            h="8"
-            bg="violet.600"
-            borderRadius="lg"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            fontWeight="bold"
-            color="white"
-            style={{ boxShadow: "0 0 16px rgba(139,92,246,0.4)" }}
-          >
-            T
-          </Box>
-          <Text fontSize="sm" fontWeight="bold" color="text.primary">
-            TenantFlow
-          </Text>
-        </Flex>
+        <HomeLink />
         <Flex align="center" gap="3">
           <ChakraLink
             href="/login"

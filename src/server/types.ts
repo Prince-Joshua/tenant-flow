@@ -72,6 +72,14 @@ export interface IDocument extends Document {
   collaborators: { user: Types.ObjectId; role: "view" | "edit" }[];
   isPublic: boolean;
   publicToken?: string;
+  approvalStatus: "draft" | "review" | "approved" | "rejected";
+  approvalHistory: {
+    action: "submitted" | "approved" | "rejected";
+    by: Types.ObjectId;
+    byName: string;
+    comment?: string;
+    at: Date;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }

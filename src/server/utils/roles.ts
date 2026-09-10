@@ -61,3 +61,13 @@ export function canManageDocumentSharing(
   const isPrivileged = ["owner", "admin"].includes(membership.role);
   return isCreator || isPrivileged;
 }
+
+// Only org owners/admins act as approvers — the document creator submits
+// for review but doesn't sign off on their own work.
+export function canApproveDocument(
+  _doc: IDocument,
+  _user: IUser,
+  membership: IMembership,
+): boolean {
+  return ["owner", "admin"].includes(membership.role);
+}
