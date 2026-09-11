@@ -4,12 +4,28 @@ A production-grade multi-tenant SaaS platform built as a single Next.js 16 App R
 
 ---
 
+## Key Features
+
+- **AI document generation** — prompt-based drafting via Gemini, with tone/length controls, regeneration (staged as a pending version for review before it overwrites the current content), duplication, and reusable templates.
+- **Approval workflow** — documents move `draft → review → approved/rejected`. Creators/editors submit for review; org owners/admins approve or reject (with an optional reason). Every transition is recorded in a per-document approval history.
+- **Comments** — threaded per-document comments, moderated by the document owner and org owners/admins.
+- **Export** — copy to clipboard, download as PDF or Word (.docx), generated client-side.
+- **Sharing**, three distinct paths depending on who the recipient is:
+  - *Collaborators* — invite an org member as a view/edit collaborator on a document.
+  - *Public link* — a token-based URL anyone can open, no login required.
+  - *Contacts* — send a one-off copy to a saved external contact (see below), without giving them a public link or an account.
+- **Contacts** — a private, org-scoped address book for customers or other outside people, separate from `Membership`. No login, no dashboard access — just a name/email/note you can pick when emailing or sharing a document. Gated by a per-plan `contactsAllowed` limit, same pattern as team member seats.
+- **Members & roles** — invite-by-email with `owner` / `admin` / `member` roles, seat limits enforced per plan.
+- **Activity log** — an audited feed of document, member, and contact events per org.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | App | Next.js 16 (App Router), TypeScript, Server Actions — one unified app, no separate API server |
-| UI | Chakra UI v3 |
+| UI | Chakra UI v3, Framer Motion (page/panel transitions) |
 | Database | MongoDB (Atlas in production), Mongoose |
 | Auth | Signed, httpOnly session cookie (no JWT access/refresh tokens) |
 | Billing | Stripe Subscriptions + Webhooks |
@@ -71,7 +87,7 @@ Note on the Stripe SDK: this project targets a post-Basil API version, where `Su
 
 Public/auth pages (`src/app/*/page.tsx`): `/`, `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`, `/org-select`.
 
-Authenticated app: `/dashboard` (org home, documents, members, billing — see `src/app/dashboard/`), `/admin` (superadmin-only: overview, `/admin/orgs`, `/admin/users`, `/admin/activity`).
+Authenticated app: `/dashboard` (org home, documents, members, contacts, billing — see `src/app/dashboard/`), `/admin` (superadmin-only: overview, `/admin/orgs`, `/admin/users`, `/admin/activity`).
 
 All data access and mutation goes through Server Actions and Server Components in `src/server/actions/` and `src/server/data/` — there is no separate REST API to document; route handlers exist only where an external caller needs one (currently just `/api/billing/webhook` for Stripe).
 
