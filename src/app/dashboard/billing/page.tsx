@@ -8,6 +8,19 @@ import {
   createCheckoutAction,
   createPortalAction,
 } from "@/server/actions/billing";
+import { getUserCountry } from "@/server/geo/getUserCountry";
+import { resolveDisplayCurrency } from "@/server/config/currency";
+import { PLAN_PRICING, type PlanKey } from "@/server/config/pricing";
+
+function formatDisplayPrice(plan: string, currency: "usd" | "gbp" | "eur" | "ngn") {
+  const pricing = PLAN_PRICING[plan as PlanKey];
+  if (!pricing) return null;
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 0,
+  }).format(pricing.display[currency]);
+}
 
 export default async function BillingPage({
   searchParams,
@@ -18,6 +31,8 @@ export default async function BillingPage({
   const { org, membership } = await requireTenant();
   const billing = await getBillingInfo(org);
   const isOwner = membership.role === "owner";
+  const country = await getUserCountry();
+  const displayCurrency = resolveDisplayCurrency(country);
 
   return (
     <>
@@ -90,7 +105,7 @@ export default async function BillingPage({
       </Box>
 
       {isOwner && (
-        <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="6">
+        <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap="4" mb="6">
           {Object.entries(billing.plans).map(([key, plan]: [string, any]) => (
             <Box
               key={key}
@@ -105,6 +120,14 @@ export default async function BillingPage({
               <Text fontSize="sm" fontWeight="bold" color="text.primary" mb="1">
                 {plan.name}
               </Text>
+              {key !== "free" && (
+                <Text fontSize="lg" fontWeight="bold" color="text.primary" mb="1">
+                  {formatDisplayPrice(key, displayCurrency)}
+                  <Text as="span" fontSize="xs" fontWeight="normal" color="text.muted">
+                    {" "}/mo
+                  </Text>
+                </Text>
+              )}
               <Text fontSize="xs" color="text.muted" mb="4">
                 {plan.limits.documentsPerCycle >= 999999
                   ? "Unlimited"
@@ -115,12 +138,19 @@ export default async function BillingPage({
                   : plan.limits.membersAllowed}{" "}
                 seats
               </Text>
-              {key !== "free" && (
-                <Text fontSize="xs" color="text.muted" mb="3">
-                  Priced in ₦ · shown in your local currency at checkout
-                  {key === "enterprise" ? " · starts at this rate" : ""}
-                </Text>
-              )}
+              {key !== "free" &&
+                (displayCurrency === "gbp" ||
+                  displayCurrency === "eur" ||
+                  key === "enterprise") && (
+                  <Text fontSize="xs" color="text.muted" mb="3">
+                    {(displayCurrency === "gbp" || displayCurrency === "eur") &&
+                      "Estimated — exact amount shown at checkout"}
+                    {(displayCurrency === "gbp" || displayCurrency === "eur") &&
+                      key === "enterprise" &&
+                      " · "}
+                    {key === "enterprise" && "Starts at this rate"}
+                  </Text>
+                )}
               {billing.plan === key ? (
                 <Box textAlign="center" fontSize="sm" color="text.muted" py="2">
                   Current plan
@@ -141,12 +171,7 @@ export default async function BillingPage({
                 </form>
               )}
               {key === "enterprise" && (
-                <Text
-                  fontSize="xs"
-                  color="text.muted"
-                  textAlign="center"
-                  mt="2"
-                >
+                <Text fontSize="xs" color="text.muted" textAlign="center" mt="2">
                   Higher volume or a custom contract?{" "}
                   <ChakraLink
                     href="mailto:support@tenantflow.dev?subject=Enterprise%20plan%20inquiry"

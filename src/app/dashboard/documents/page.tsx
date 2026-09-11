@@ -225,7 +225,7 @@ export default async function DocumentsPage({
       </form>
 
       <Grid
-        templateColumns={selectedDoc ? "1fr 1.6fr" : "1fr"}
+        templateColumns={{ base: "1fr", md: selectedDoc ? "1fr 1.6fr" : "1fr" }}
         gap="5"
         alignItems="flex-start"
       >
@@ -331,14 +331,32 @@ export default async function DocumentsPage({
         {selectedDoc && (
           <Box
             bg="bg.surface"
-            border="1px solid"
+            border={{ base: "none", md: "1px solid" }}
             borderColor="border.subtle"
-            borderRadius="xl"
-            p="6"
-            position="sticky"
-            top="8"
+            borderRadius={{ base: 0, md: "xl" }}
+            p={{ base: 4, md: 6 }}
+            // Mobile: full-screen overlay above everything (sidebar
+            // included) so the open document is the only thing visible,
+            // with its own scroll. md+: unchanged — sits sticky next to
+            // the list, in normal flow.
+            position={{ base: "fixed", md: "sticky" }}
+            inset={{ base: 0, md: "auto" }}
+            top={{ base: 0, md: "8" }}
+            zIndex={{ base: "300", md: "auto" }}
+            overflowY={{ base: "auto", md: "visible" }}
           >
-            <Flex justify="space-between" align="flex-start" mb="3">
+            <Flex
+              justify="space-between"
+              align="flex-start"
+              mb="3"
+              position={{ base: "sticky", md: "static" }}
+              top={{ base: "-4", md: "auto" }}
+              mt={{ base: "-4", md: "0" }}
+              pt={{ base: "4", md: "0" }}
+              pb={{ base: "2", md: "0" }}
+              bg="bg.surface"
+              zIndex="1"
+            >
               <Box flex="1" mr="4">
                 <RenameDocumentForm
                   id={selectedDoc._id}
