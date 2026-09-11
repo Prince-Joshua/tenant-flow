@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
+import { CloseButton } from "@/components/shared/CloseButton";
 
 const PDF_MARGIN = 15;
 const PDF_LINE_HEIGHT = 7;
@@ -169,20 +170,7 @@ export default function DocumentExportActions({
           zIndex="10"
         >
           <Flex justify="flex-end" mb="1">
-            <Button
-              size="2xs"
-              variant="ghost"
-              onClick={close}
-              fontSize="xs"
-              color="text.muted"
-              px="1"
-              minW="auto"
-              h="auto"
-              _hover={{ color: "text.primary", bg: "bg.elevated" }}
-              aria-label="Close export menu"
-            >
-              ✕
-            </Button>
+            <CloseButton onClick={close} aria-label="Close export menu" />
           </Flex>
           <Text {...menuItemStyle} onClick={handleCopy}>
             {copied ? "✓ Copied to clipboard" : "⧉ Copy to clipboard"}

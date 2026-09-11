@@ -23,6 +23,7 @@ export interface Usage {
 export interface Limits {
   documentsPerCycle: number;
   membersAllowed: number;
+  contactsAllowed: number;
 }
 
 export interface User {
@@ -83,6 +84,14 @@ export interface Invoice {
   status: string;
   date: string;
   pdf?: string;
+}
+
+export interface Contact {
+  _id: string;
+  name: string;
+  email: string;
+  note?: string;
+  createdAt: string;
 }
 
 export interface PlanConfig {

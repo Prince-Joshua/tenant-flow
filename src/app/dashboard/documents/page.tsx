@@ -30,7 +30,9 @@ import ApprovalPanel from "@/components/documents/ApprovalPanel";
 import SendDocumentEmailPanel from "@/components/documents/SendDocumentEmailPanel";
 import { DocumentActionsMenuProvider } from "@/components/documents/DocumentActionsMenuContext";
 import { getOrgMembers } from "@/server/data/org";
+import { getOrgContacts } from "@/server/data/contacts";
 import { getComments } from "@/server/data/comments";
+import { DetailsCloseButton } from "@/components/shared/CloseButton";
 
 const STATUS_FILTERS = [
   { value: "", label: "All (excl. archived)" },
@@ -78,6 +80,7 @@ export default async function DocumentsPage({
     templates,
     orgMembersRaw,
     commentsRaw,
+    contactsRaw,
   ] = await Promise.all([
     getDocuments(org, { page, search, status, sort }),
     resolvedSearchParams.doc
@@ -88,6 +91,7 @@ export default async function DocumentsPage({
     resolvedSearchParams.doc
       ? getComments(org, resolvedSearchParams.doc)
       : Promise.resolve([]),
+    resolvedSearchParams.doc ? getOrgContacts(org) : Promise.resolve([]),
   ]);
 
   const docs = JSON.parse(JSON.stringify(documents));
@@ -95,6 +99,7 @@ export default async function DocumentsPage({
   const templateOptions = JSON.parse(JSON.stringify(templates));
   const orgMembers = JSON.parse(JSON.stringify(orgMembersRaw));
   const comments = JSON.parse(JSON.stringify(commentsRaw));
+  const contacts = JSON.parse(JSON.stringify(contactsRaw));
   const canManageSharingForDoc = Boolean(
     selectedDoc &&
     (selectedDoc.createdBy?._id === user._id.toString() ||
@@ -153,6 +158,9 @@ export default async function DocumentsPage({
           borderRadius="0 0 12px 12px"
           p="6"
         >
+          <Flex justify="flex-end" mb="1">
+            <DetailsCloseButton aria-label="Close generate panel" />
+          </Flex>
           <GenerateDocumentForm templates={templateOptions} />
         </Box>
       </Box>
@@ -445,7 +453,10 @@ export default async function DocumentsPage({
                   content={selectedDoc.content}
                 />
 
-                <SendDocumentEmailPanel documentId={selectedDoc._id} />
+                <SendDocumentEmailPanel
+                  documentId={selectedDoc._id}
+                  contacts={contacts}
+                />
 
                 {canManageSharingForDoc && (
                   <ShareDocumentPanel

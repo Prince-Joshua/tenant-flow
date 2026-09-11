@@ -45,6 +45,7 @@ export interface IOrganization extends Document {
   limits: {
     documentsPerCycle: number;
     membersAllowed: number;
+    contactsAllowed: number;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -111,6 +112,17 @@ export interface IComment extends Document {
   author: Types.ObjectId;
   authorName: string;
   body: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IContact extends Document {
+  _id: Types.ObjectId;
+  organization: Types.ObjectId;
+  createdBy: Types.ObjectId;
+  name: string;
+  email: string;
+  note?: string;
   createdAt: Date;
   updatedAt: Date;
 }

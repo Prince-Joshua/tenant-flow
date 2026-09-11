@@ -1,4 +1,3 @@
-
 import { Box, Flex, Text, Badge } from "@chakra-ui/react";
 
 export function StatCard({
@@ -220,6 +219,8 @@ const actionConfig: Record<
   MEMBER_INVITED: { icon: "◇", color: "emerald.400", label: "Invited member" },
   MEMBER_REMOVED: { icon: "✕", color: "rose.400", label: "Removed member" },
   MEMBER_ROLE_UPDATED: { icon: "◈", color: "sky.400", label: "Updated role" },
+  CONTACT_ADDED: { icon: "☰", color: "emerald.400", label: "Added contact" },
+  CONTACT_REMOVED: { icon: "✕", color: "rose.400", label: "Removed contact" },
   ORG_UPDATED: {
     icon: "⬡",
     color: "violet.400",

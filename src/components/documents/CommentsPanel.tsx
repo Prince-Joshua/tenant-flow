@@ -8,6 +8,7 @@ import {
 } from "@/server/actions/comments";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
+import { CloseButton } from "@/components/shared/CloseButton";
 
 type CommentItem = {
   _id: string;
@@ -79,20 +80,7 @@ export default function CommentsPanel({
           zIndex="10"
         >
           <Flex justify="flex-end" mb="1">
-            <Button
-              size="2xs"
-              variant="ghost"
-              onClick={close}
-              fontSize="xs"
-              color="text.muted"
-              px="1"
-              minW="auto"
-              h="auto"
-              _hover={{ color: "text.primary", bg: "bg.elevated" }}
-              aria-label="Close comments panel"
-            >
-              ✕
-            </Button>
+            <CloseButton onClick={close} aria-label="Close comments panel" />
           </Flex>
           {comments.length === 0 ? (
             <Text fontSize="xs" color="text.muted" mb="3">

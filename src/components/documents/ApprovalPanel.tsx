@@ -9,6 +9,7 @@ import {
 } from "@/server/actions/documents";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
+import { CloseButton } from "@/components/shared/CloseButton";
 
 type ApprovalStatus = "draft" | "review" | "approved" | "rejected";
 
@@ -112,20 +113,7 @@ export default function ApprovalPanel({
           zIndex="10"
         >
           <Flex justify="flex-end" mb="1">
-            <Button
-              size="2xs"
-              variant="ghost"
-              onClick={close}
-              fontSize="xs"
-              color="text.muted"
-              px="1"
-              minW="auto"
-              h="auto"
-              _hover={{ color: "text.primary", bg: "bg.elevated" }}
-              aria-label="Close approval panel"
-            >
-              ✕
-            </Button>
+            <CloseButton onClick={close} aria-label="Close approval panel" />
           </Flex>
 
           {canSubmit && canResubmit && (

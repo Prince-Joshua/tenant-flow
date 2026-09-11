@@ -1,5 +1,6 @@
 "use client";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { PlanBadge } from "@/components/shared";
 import { logoutAction } from "@/server/actions/auth";
@@ -18,6 +19,7 @@ const navItems = [
   { icon: "⬡", label: "Overview", path: "/dashboard" },
   { icon: "✦", label: "Documents", path: "/dashboard/documents" },
   { icon: "◈", label: "Members", path: "/dashboard/members" },
+  { icon: "☰", label: "Contacts", path: "/dashboard/contacts" },
   { icon: "◇", label: "Billing", path: "/dashboard/billing" },
   { icon: "○", label: "Settings", path: "/dashboard/settings" },
 ];
@@ -38,8 +40,6 @@ export default function Sidebar({
   isAdmin?: boolean;
   user: SidebarUser;
   activeOrg?: SidebarOrg | null;
-  /** Controls visibility on mobile only — ignored at md+, where the
-   * sidebar is always shown docked. */
   isOpen?: boolean;
   onClose?: () => void;
 }) {
@@ -123,19 +123,19 @@ export default function Sidebar({
             return (
               <Flex
                 key={item.path}
+                position="relative"
                 align="center"
                 gap="3"
                 px="3"
                 py="2.5"
                 borderRadius="lg"
                 cursor="pointer"
-                transition="all 0.15s"
-                bg={isActive ? "brand.subtle" : "transparent"}
+                transition="color 0.15s"
                 color={isActive ? "violet.400" : "text.secondary"}
                 borderLeft="2px solid"
                 borderLeftColor={isActive ? "violet.500" : "transparent"}
                 _hover={{
-                  bg: isActive ? "brand.subtle" : "bg.elevated",
+                  bg: isActive ? "transparent" : "bg.elevated",
                   color: isActive ? "violet.400" : "text.primary",
                 }}
                 onClick={() => {
@@ -143,10 +143,27 @@ export default function Sidebar({
                   onClose?.();
                 }}
               >
-                <Text fontSize="sm">{item.icon}</Text>
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebar-active-pill"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "0.5rem",
+                      background: "rgba(139,92,246,0.12)",
+                      zIndex: 0,
+                    }}
+                  />
+                )}
+                <Text fontSize="sm" position="relative" zIndex={1}>
+                  {item.icon}
+                </Text>
                 <Text
                   fontSize="sm"
                   fontWeight={isActive ? "semibold" : "medium"}
+                  position="relative"
+                  zIndex={1}
                 >
                   {item.label}
                 </Text>
@@ -186,9 +203,7 @@ export default function Sidebar({
             </Text>
           </Box>
         </Flex>
-        {/* Native form bound directly to a Server Action — no client-side
-            dispatch(clearCredentials()) needed, the action clears the
-            httpOnly session cookie server-side and redirects. */}
+
         <form action={logoutAction}>
           <Button
             type="submit"

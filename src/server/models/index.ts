@@ -7,6 +7,7 @@ import {
   IDocument,
   IActivityLog,
   IComment,
+  IContact,
 } from "../types";
 
 const userSchema = new Schema<IUser>(
@@ -65,6 +66,7 @@ const organizationSchema = new Schema<IOrganization>(
     limits: {
       documentsPerCycle: { type: Number, default: 5 },
       membersAllowed: { type: Number, default: 1 },
+      contactsAllowed: { type: Number, default: 25 },
     },
   },
   { timestamps: true },
@@ -208,3 +210,24 @@ commentSchema.index({ document: 1, createdAt: 1 });
 export const Comment =
   (mongoose.models.Comment as mongoose.Model<IComment>) ||
   mongoose.model<IComment>("Comment", commentSchema);
+
+const contactSchema = new Schema<IContact>(
+  {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true, lowercase: true },
+    note: { type: String, trim: true, maxlength: 500 },
+  },
+  { timestamps: true },
+);
+
+contactSchema.index({ organization: 1, email: 1 }, { unique: true });
+
+export const Contact =
+  (mongoose.models.Contact as mongoose.Model<IContact>) ||
+  mongoose.model<IContact>("Contact", contactSchema);
