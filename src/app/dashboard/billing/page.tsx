@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Link as ChakraLink, Text } from "@chakra-ui/react";
 import { requireTenant } from "@/server/data/tenant";
 import { getBillingInfo } from "@/server/data/billing";
 import PageHeader from "@/components/layout/PageHeader";
@@ -115,6 +115,12 @@ export default async function BillingPage({
                   : plan.limits.membersAllowed}{" "}
                 seats
               </Text>
+              {key !== "free" && (
+                <Text fontSize="xs" color="text.muted" mb="3">
+                  Priced in ₦ · shown in your local currency at checkout
+                  {key === "enterprise" ? " · starts at this rate" : ""}
+                </Text>
+              )}
               {billing.plan === key ? (
                 <Box textAlign="center" fontSize="sm" color="text.muted" py="2">
                   Current plan
@@ -133,6 +139,22 @@ export default async function BillingPage({
                     Upgrade
                   </SubmitButton>
                 </form>
+              )}
+              {key === "enterprise" && (
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  textAlign="center"
+                  mt="2"
+                >
+                  Higher volume or a custom contract?{" "}
+                  <ChakraLink
+                    href="mailto:support@tenantflow.dev?subject=Enterprise%20plan%20inquiry"
+                    color="violet.400"
+                  >
+                    Contact us
+                  </ChakraLink>
+                </Text>
               )}
             </Box>
           ))}
@@ -168,7 +190,10 @@ export default async function BillingPage({
                   {new Date(inv.date).toLocaleDateString()}
                 </Text>
                 <Text color="text.secondary">
-                  ${inv.amount.toFixed(2)} {inv.currency.toUpperCase()}
+                  {new Intl.NumberFormat(undefined, {
+                    style: "currency",
+                    currency: inv.currency,
+                  }).format(inv.amount)}
                 </Text>
                 <Text color="text.muted" textTransform="capitalize">
                   {inv.status}

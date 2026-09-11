@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "create-admin": "tsx src/server/scripts/createSuperAdmin.ts"
+    "create-admin": "tsx src/server/scripts/createSuperAdmin.ts",
+    "setup-ngn-pricing": "tsx src/server/scripts/setNigeriaPriceOverride.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.37.0",

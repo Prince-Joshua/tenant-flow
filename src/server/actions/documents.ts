@@ -75,6 +75,8 @@ export async function generateDocumentAction(
       title,
       content,
       prompt,
+      tone,
+      length,
       organization: org._id,
       createdBy: user._id,
       tokensUsed: content.split(" ").length,
@@ -301,7 +303,16 @@ export async function regenerateDocumentAction(
       freshOrg &&
       freshOrg.usage.documentsGenerated < freshOrg.limits.documentsPerCycle
     ) {
-      const newContent = await generateContent(doc.prompt || doc.title);
+      // Was: generateContent(doc.prompt || doc.title) — sent the raw
+      // topic straight to the model with no instructions, and fell back
+      // to just the document's TITLE when a doc had no stored prompt.
+      // Neither gives the model enough to produce relevant content; this
+      // rebuilds the same structured prompt (topic + tone + length) used
+      // at original generation, so regeneration reuses that document's
+      // original tone/length instead of losing them.
+      const newContent = await generateContent(
+        buildPrompt(doc.prompt || doc.title, doc.tone, doc.length),
+      );
       doc.pendingContent = newContent;
       doc.pendingTokensUsed = newContent.split(" ").length;
       doc.pendingAt = new Date();
@@ -707,9 +718,7 @@ export async function submitForApprovalAction(
   redirect(`/dashboard/documents?doc=${id}`);
 }
 
-export async function approveDocumentAction(
-  formData: FormData,
-): Promise<void> {
+export async function approveDocumentAction(formData: FormData): Promise<void> {
   const { user, org, membership } = await requireTenant();
   const id = String(formData.get("id") || "");
 
@@ -780,7 +789,8 @@ export async function rejectDocumentAction(
     });
   } catch (err) {
     return {
-      error: err instanceof AppError ? err.message : "Failed to reject document",
+      error:
+        err instanceof AppError ? err.message : "Failed to reject document",
     };
   }
 

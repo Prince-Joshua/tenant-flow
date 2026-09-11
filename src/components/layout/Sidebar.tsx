@@ -32,10 +32,16 @@ export default function Sidebar({
   isAdmin = false,
   user,
   activeOrg,
+  isOpen = false,
+  onClose,
 }: {
   isAdmin?: boolean;
   user: SidebarUser;
   activeOrg?: SidebarOrg | null;
+  /** Controls visibility on mobile only — ignored at md+, where the
+   * sidebar is always shown docked. */
+  isOpen?: boolean;
+  onClose?: () => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -54,10 +60,40 @@ export default function Sidebar({
       left="0"
       top="0"
       bottom="0"
-      zIndex="100"
+      zIndex="200"
+      transform={{
+        base: isOpen ? "translateX(0)" : "translateX(-100%)",
+        md: "translateX(0)",
+      }}
+      transition="transform 0.2s ease"
     >
-      <Box px="5" py="5" borderBottom="1px solid" borderColor="border.subtle">
+      <Box
+        px="5"
+        py="5"
+        borderBottom="1px solid"
+        borderColor="border.subtle"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <HomeLink />
+        {/* Close control only ever needed on the mobile drawer */}
+        <Button
+          onClick={onClose}
+          display={{ base: "flex", md: "none" }}
+          minW="8"
+          h="8"
+          p="0"
+          bg="transparent"
+          color="text.muted"
+          border="none"
+          cursor="pointer"
+          fontSize="lg"
+          _hover={{ color: "text.primary" }}
+          aria-label="Close menu"
+        >
+          ✕
+        </Button>
       </Box>
       {!isAdmin && activeOrg && (
         <Box px="4" py="3" borderBottom="1px solid" borderColor="border.subtle">
@@ -102,7 +138,10 @@ export default function Sidebar({
                   bg: isActive ? "brand.subtle" : "bg.elevated",
                   color: isActive ? "violet.400" : "text.primary",
                 }}
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  router.push(item.path);
+                  onClose?.();
+                }}
               >
                 <Text fontSize="sm">{item.icon}</Text>
                 <Text

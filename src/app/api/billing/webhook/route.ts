@@ -55,6 +55,12 @@ export async function POST(req: NextRequest) {
         org.subscriptionStatus = sub.status as typeof org.subscriptionStatus;
         org.billingCycleEnd = getSubscriptionPeriodEnd(sub);
         org.limits = PLANS[plan].limits;
+        // Record what currency/amount Stripe actually resolved for this
+        // customer (Adaptive Pricing conversion, or the fixed NGN
+        // override) — not something our app decided.
+        org.subscriptionCurrency = sub.items.data[0]?.price.currency;
+        org.subscriptionAmount =
+          sub.items.data[0]?.price.unit_amount ?? undefined;
 
         org.usage.documentsGenerated = 0;
         org.usage.apiCalls = 0;
@@ -75,6 +81,9 @@ export async function POST(req: NextRequest) {
         org.usage.apiCalls = 0;
         org.subscriptionStatus = "active";
         org.billingCycleEnd = getSubscriptionPeriodEnd(sub);
+        org.subscriptionCurrency = sub.items.data[0]?.price.currency;
+        org.subscriptionAmount =
+          sub.items.data[0]?.price.unit_amount ?? undefined;
         await org.save();
         break;
       }
@@ -100,6 +109,8 @@ export async function POST(req: NextRequest) {
         org.plan = "free";
         org.subscriptionStatus = "canceled";
         org.stripeSubscriptionId = undefined;
+        org.subscriptionCurrency = undefined;
+        org.subscriptionAmount = undefined;
         org.limits = PLANS.free.limits;
         org.usage.documentsGenerated = 0;
         await org.save();

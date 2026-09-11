@@ -32,6 +32,12 @@ export interface IOrganization extends Document {
     | "canceled"
     | "trialing";
   billingCycleEnd?: Date;
+  // What the org's subscription is actually being charged in right now.
+  // Populated from the Stripe subscription on checkout/renewal — this is
+  // whatever currency Adaptive Pricing (or the NGN override) resolved to
+  // for this customer, not something we choose in our own code.
+  subscriptionCurrency?: string;
+  subscriptionAmount?: number;
   usage: {
     documentsGenerated: number;
     apiCalls: number;
@@ -63,6 +69,8 @@ export interface IDocument extends Document {
   organization: Types.ObjectId;
   createdBy: Types.ObjectId;
   prompt?: string;
+  tone?: string;
+  length?: string;
   tokensUsed: number;
   status: "draft" | "active" | "archived";
   isTemplate: boolean;

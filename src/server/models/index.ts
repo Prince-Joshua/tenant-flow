@@ -56,6 +56,8 @@ const organizationSchema = new Schema<IOrganization>(
       default: "active",
     },
     billingCycleEnd: Date,
+    subscriptionCurrency: String,
+    subscriptionAmount: Number,
     usage: {
       documentsGenerated: { type: Number, default: 0 },
       apiCalls: { type: Number, default: 0 },
@@ -112,6 +114,8 @@ const documentSchema = new Schema<IDocument>(
     },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     prompt: String,
+    tone: String,
+    length: String,
     tokensUsed: { type: Number, default: 0 },
     status: {
       type: String,
