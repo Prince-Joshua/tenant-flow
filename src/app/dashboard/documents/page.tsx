@@ -335,10 +335,6 @@ export default async function DocumentsPage({
             borderColor="border.subtle"
             borderRadius={{ base: 0, md: "xl" }}
             p={{ base: 4, md: 6 }}
-            // Mobile: full-screen overlay above everything (sidebar
-            // included) so the open document is the only thing visible,
-            // with its own scroll. md+: unchanged — sits sticky next to
-            // the list, in normal flow.
             position={{ base: "fixed", md: "sticky" }}
             inset={{ base: 0, md: "auto" }}
             top={{ base: 0, md: "8" }}

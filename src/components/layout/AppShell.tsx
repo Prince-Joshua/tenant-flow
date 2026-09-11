@@ -1,8 +1,29 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import type { SidebarUser, SidebarOrg } from "./Sidebar";
+
+function AnimatedPage({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const routeKey = pathname;
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={routeKey}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 export default function AppShell({
   children,
@@ -19,8 +40,6 @@ export default function AppShell({
 
   return (
     <Box display="flex" minH="100vh" bg="bg.canvas">
-      {/* Backdrop — mobile only, sits above content but below the sidebar,
-          tapping it closes the drawer same as the ✕ in the sidebar header. */}
       <Box
         position="fixed"
         inset="0"
@@ -84,7 +103,9 @@ export default function AppShell({
 
         <Box p="8">
           <Box maxW="1100px" mx="auto">
-            {children}
+            <Suspense fallback={children}>
+              <AnimatedPage>{children}</AnimatedPage>
+            </Suspense>
           </Box>
         </Box>
       </Box>
