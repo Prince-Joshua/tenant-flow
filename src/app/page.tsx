@@ -1,38 +1,266 @@
-import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+// import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+// import { ChakraLink } from "@/components/shared/ChakraLink";
+// import { HomeLink } from "@/components/shared/HomeLink";
+
+// const features = [
+//   {
+//     icon: "✦",
+//     title: "AI document generation",
+//     body: "Draft contracts, proposals, and reports in seconds with Gemini-powered writing.",
+//   },
+//   {
+//     icon: "◈",
+//     title: "Per-tenant isolation",
+//     body: "Every organization gets its own scoped data, members, and usage limits.",
+//   },
+//   {
+//     icon: "◇",
+//     title: "Built-in billing",
+//     body: "Stripe subscriptions, usage metering, and self-serve plan upgrades out of the box.",
+//   },
+// ];
+
+// export default function HomePage() {
+//   return (
+//     <Box minH="100vh" bg="bg.canvas">
+//       <Flex
+//         as="nav"
+//         justify="space-between"
+//         align="center"
+//         px={{ base: "5", md: "10" }}
+//         py="5"
+//         borderBottom="1px solid"
+//         borderColor="border.subtle"
+//       >
+//         <HomeLink />
+//         <Flex align="center" gap="3">
+//           <ChakraLink
+//             href="/login"
+//             fontSize="sm"
+//             color="text.secondary"
+//             px="3"
+//             py="2"
+//           >
+//             Sign in
+//           </ChakraLink>
+//           <ChakraLink
+//             href="/register"
+//             fontSize="sm"
+//             fontWeight="semibold"
+//             color="white"
+//             bg="violet.600"
+//             borderRadius="lg"
+//             px="4"
+//             py="2"
+//             _hover={{ bg: "violet.500" }}
+//           >
+//             Get started
+//           </ChakraLink>
+//         </Flex>
+//       </Flex>
+
+//       <Flex
+//         direction="column"
+//         align="center"
+//         textAlign="center"
+//         px="5"
+//         pt={{ base: "16", md: "24" }}
+//         pb={{ base: "16", md: "20" }}
+//       >
+//         <Text
+//           fontSize="xs"
+//           fontWeight="semibold"
+//           color="violet.400"
+//           bg="brand.subtle"
+//           border="1px solid"
+//           borderColor="brand.border"
+//           borderRadius="full"
+//           px="3"
+//           py="1"
+//           mb="6"
+//           letterSpacing="wide"
+//           textTransform="uppercase"
+//         >
+//           Multi-tenant SaaS platform
+//         </Text>
+//         <Text
+//           as="h1"
+//           fontSize={{ base: "3xl", md: "5xl" }}
+//           fontWeight="bold"
+//           color="text.primary"
+//           letterSpacing="tight"
+//           maxW="720px"
+//           lineHeight="1.15"
+//           mb="5"
+//         >
+//           Run your organization on one workspace, not ten tools
+//         </Text>
+//         <Text
+//           fontSize={{ base: "md", md: "lg" }}
+//           color="text.secondary"
+//           maxW="560px"
+//           mb="8"
+//         >
+//           TenantFlow gives every team its own tenant with role-based access,
+//           AI-assisted document generation, and billing that just works.
+//         </Text>
+//         <Flex gap="3">
+//           <ChakraLink
+//             href="/register"
+//             fontSize="sm"
+//             fontWeight="semibold"
+//             color="white"
+//             bg="violet.600"
+//             borderRadius="lg"
+//             px="6"
+//             py="3"
+//             _hover={{ bg: "violet.500" }}
+//           >
+//             Create your workspace
+//           </ChakraLink>
+//           <ChakraLink
+//             href="/login"
+//             fontSize="sm"
+//             fontWeight="semibold"
+//             color="text.secondary"
+//             border="1px solid"
+//             borderColor="border.default"
+//             borderRadius="lg"
+//             px="6"
+//             py="3"
+//             _hover={{ bg: "bg.elevated" }}
+//           >
+//             Sign in
+//           </ChakraLink>
+//         </Flex>
+//       </Flex>
+
+//       <Grid
+//         templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+//         gap="4"
+//         px={{ base: "5", md: "10" }}
+//         pb={{ base: "16", md: "24" }}
+//         maxW="1100px"
+//         mx="auto"
+//       >
+//         {features.map((f) => (
+//           <Box
+//             key={f.title}
+//             bg="bg.surface"
+//             border="1px solid"
+//             borderColor="border.subtle"
+//             borderRadius="xl"
+//             p="6"
+//           >
+//             <Box
+//               bg="brand.subtle"
+//               borderRadius="lg"
+//               p="2.5"
+//               fontSize="lg"
+//               display="inline-flex"
+//               mb="4"
+//             >
+//               {f.icon}
+//             </Box>
+//             <Text
+//               fontSize="md"
+//               fontWeight="semibold"
+//               color="text.primary"
+//               mb="2"
+//             >
+//               {f.title}
+//             </Text>
+//             <Text fontSize="sm" color="text.muted">
+//               {f.body}
+//             </Text>
+//           </Box>
+//         ))}
+//       </Grid>
+
+//       <Flex
+//         as="footer"
+//         justify="center"
+//         align="center"
+//         gap="6"
+//         px="5"
+//         py="6"
+//         borderTop="1px solid"
+//         borderColor="border.subtle"
+//       >
+//         <Text fontSize="xs" color="text.muted">
+//           © {new Date().getFullYear()} TenantFlow LLC
+//         </Text>
+//         <ChakraLink
+//           href="/terms"
+//           fontSize="xs"
+//           color="text.muted"
+//           _hover={{ color: "text.secondary" }}
+//         >
+//           Terms of Service
+//         </ChakraLink>
+//       </Flex>
+//     </Box>
+//   );
+// }
+
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import { HomeLink } from "@/components/shared/HomeLink";
+import { HomeHero } from "@/components/home/Homehero";
+import { HomeFeatures } from "@/components/home/Homefeatures";
+import { HomePricing } from "@/components/home/Homepricing";
+import { HomeTestimonials } from "@/components/home/Hometestimonials";
+import { HomeCTA } from "@/components/home/Homecta";
 
-const features = [
-  {
-    icon: "✦",
-    title: "AI document generation",
-    body: "Draft contracts, proposals, and reports in seconds with Gemini-powered writing.",
-  },
-  {
-    icon: "◈",
-    title: "Per-tenant isolation",
-    body: "Every organization gets its own scoped data, members, and usage limits.",
-  },
-  {
-    icon: "◇",
-    title: "Built-in billing",
-    body: "Stripe subscriptions, usage metering, and self-serve plan upgrades out of the box.",
-  },
+const navLinks = [
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Reviews", href: "#reviews" },
 ];
 
 export default function HomePage() {
   return (
-    <Box minH="100vh" bg="bg.canvas">
+    <Box minH="100vh" bg="bg.canvas" overflowX="hidden">
       <Flex
         as="nav"
+        position="sticky"
+        top="0"
+        zIndex="50"
         justify="space-between"
         align="center"
         px={{ base: "5", md: "10" }}
-        py="5"
+        py="4"
         borderBottom="1px solid"
         borderColor="border.subtle"
+        bg="rgba(8,12,18,0.72)"
+        style={{
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+        }}
       >
         <HomeLink />
+
+        <Flex
+          align="center"
+          gap="8"
+          display={{ base: "none", md: "flex" }}
+          position="absolute"
+          left="50%"
+          style={{ transform: "translateX(-50%)" }}
+        >
+          {navLinks.map((link) => (
+            <ChakraLink
+              key={link.href}
+              href={link.href}
+              fontSize="sm"
+              color="text.secondary"
+              _hover={{ color: "text.primary" }}
+            >
+              {link.label}
+            </ChakraLink>
+          ))}
+        </Flex>
+
         <Flex align="center" gap="3">
           <ChakraLink
             href="/login"
@@ -40,6 +268,8 @@ export default function HomePage() {
             color="text.secondary"
             px="3"
             py="2"
+            display={{ base: "none", sm: "inline-block" }}
+            _hover={{ color: "text.primary" }}
           >
             Sign in
           </ChakraLink>
@@ -59,146 +289,81 @@ export default function HomePage() {
         </Flex>
       </Flex>
 
-      <Flex
-        direction="column"
-        align="center"
-        textAlign="center"
-        px="5"
-        pt={{ base: "16", md: "24" }}
-        pb={{ base: "16", md: "20" }}
-      >
-        <Text
-          fontSize="xs"
-          fontWeight="semibold"
-          color="violet.400"
-          bg="brand.subtle"
-          border="1px solid"
-          borderColor="brand.border"
-          borderRadius="full"
-          px="3"
-          py="1"
-          mb="6"
-          letterSpacing="wide"
-          textTransform="uppercase"
-        >
-          Multi-tenant SaaS platform
-        </Text>
-        <Text
-          as="h1"
-          fontSize={{ base: "3xl", md: "5xl" }}
-          fontWeight="bold"
-          color="text.primary"
-          letterSpacing="tight"
-          maxW="720px"
-          lineHeight="1.15"
-          mb="5"
-        >
-          Run your organization on one workspace, not ten tools
-        </Text>
-        <Text
-          fontSize={{ base: "md", md: "lg" }}
-          color="text.secondary"
-          maxW="560px"
-          mb="8"
-        >
-          TenantFlow gives every team its own tenant with role-based access,
-          AI-assisted document generation, and billing that just works.
-        </Text>
-        <Flex gap="3">
-          <ChakraLink
-            href="/register"
-            fontSize="sm"
-            fontWeight="semibold"
-            color="white"
-            bg="violet.600"
-            borderRadius="lg"
-            px="6"
-            py="3"
-            _hover={{ bg: "violet.500" }}
-          >
-            Create your workspace
-          </ChakraLink>
-          <ChakraLink
-            href="/login"
-            fontSize="sm"
-            fontWeight="semibold"
-            color="text.secondary"
-            border="1px solid"
-            borderColor="border.default"
-            borderRadius="lg"
-            px="6"
-            py="3"
-            _hover={{ bg: "bg.elevated" }}
-          >
-            Sign in
-          </ChakraLink>
-        </Flex>
-      </Flex>
+      <HomeHero />
 
-      <Grid
-        templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
-        gap="4"
-        px={{ base: "5", md: "10" }}
-        pb={{ base: "16", md: "24" }}
-        maxW="1100px"
-        mx="auto"
-      >
-        {features.map((f) => (
-          <Box
-            key={f.title}
-            bg="bg.surface"
-            border="1px solid"
-            borderColor="border.subtle"
-            borderRadius="xl"
-            p="6"
-          >
-            <Box
-              bg="brand.subtle"
-              borderRadius="lg"
-              p="2.5"
-              fontSize="lg"
-              display="inline-flex"
-              mb="4"
-            >
-              {f.icon}
-            </Box>
-            <Text
-              fontSize="md"
-              fontWeight="semibold"
-              color="text.primary"
-              mb="2"
-            >
-              {f.title}
-            </Text>
-            <Text fontSize="sm" color="text.muted">
-              {f.body}
+      <Box id="features">
+        <HomeFeatures />
+      </Box>
+
+      <Box id="pricing">
+        <HomePricing />
+      </Box>
+
+      <Box id="reviews">
+        <HomeTestimonials />
+      </Box>
+
+      <HomeCTA />
+
+      <Box as="footer" borderTop="1px solid" borderColor="border.subtle">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justify="space-between"
+          align={{ base: "flex-start", md: "center" }}
+          gap="6"
+          px={{ base: "5", md: "10" }}
+          py="8"
+        >
+          <Box>
+            <HomeLink />
+            <Text fontSize="xs" color="text.muted" mt="2" maxW="320px">
+              One workspace for every organization you run.
             </Text>
           </Box>
-        ))}
-      </Grid>
 
-      <Flex
-        as="footer"
-        justify="center"
-        align="center"
-        gap="6"
-        px="5"
-        py="6"
-        borderTop="1px solid"
-        borderColor="border.subtle"
-      >
-        <Text fontSize="xs" color="text.muted">
-          © {new Date().getFullYear()} TenantFlow LLC
-        </Text>
-        <ChakraLink
-          href="/terms"
-          fontSize="xs"
-          color="text.muted"
-          _hover={{ color: "text.secondary" }}
-        >
-          Terms of Service
-        </ChakraLink>
-      </Flex>
+          <Flex align="center" gap="6" wrap="wrap">
+            {navLinks.map((link) => (
+              <ChakraLink
+                key={link.href}
+                href={link.href}
+                fontSize="sm"
+                color="text.secondary"
+                _hover={{ color: "text.primary" }}
+              >
+                {link.label}
+              </ChakraLink>
+            ))}
+            <ChakraLink
+              href="/terms"
+              fontSize="sm"
+              color="text.secondary"
+              _hover={{ color: "text.primary" }}
+            >
+              Terms of Service
+            </ChakraLink>
+            <ChakraLink
+              href="/login"
+              fontSize="sm"
+              color="text.secondary"
+              _hover={{ color: "text.primary" }}
+            >
+              Sign in
+            </ChakraLink>
+          </Flex>
+        </Flex>
+
+        <Box borderTop="1px solid" borderColor="border.subtle">
+          <Text
+            fontSize="xs"
+            color="text.muted"
+            textAlign="center"
+            px="5"
+            py="5"
+          >
+            © {new Date().getFullYear()} TenantFlow LLC. All rights reserved.
+          </Text>
+        </Box>
+      </Box>
     </Box>
   );
 }

@@ -75,8 +75,11 @@ export function HomeHero() {
       </Box>
 
       <Flex
+        w={"full"}
         direction="column"
         align="center"
+        justify="center"
+      
         textAlign="center"
         px="5"
         pt={{ base: "16", md: "24" }}
@@ -86,6 +89,7 @@ export function HomeHero() {
       >
         <Reveal y={14} duration={0.5}>
           <Text
+            maxW={"fit-content"}
             fontSize="xs"
             fontWeight="semibold"
             color="violet.400"
@@ -99,7 +103,7 @@ export function HomeHero() {
             letterSpacing="wide"
             textTransform="uppercase"
           >
-            Multi-tenant SaaS platform
+            Multi-Agent SaaS platform
           </Text>
         </Reveal>
 
@@ -341,6 +345,7 @@ export function HomeHero() {
                           Draft a renewal notice for our Q3 facilities clients
                         </Box>
                         <MotionBox
+                          as={motion.div}
                           initial={{ opacity: 0 }}
                           whileInView={{ opacity: 1 }}
                           viewport={{ once: true }}
