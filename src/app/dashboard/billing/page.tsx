@@ -1,4 +1,11 @@
-import { Box, Flex, Grid, Link as ChakraLink, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Link as ChakraLink,
+  Text,
+  Table,
+} from "@chakra-ui/react";
 import { requireTenant } from "@/server/data/tenant";
 import { getBillingInfo } from "@/server/data/billing";
 import PageHeader from "@/components/layout/PageHeader";
@@ -12,7 +19,10 @@ import { getUserCountry } from "@/server/geo/getUserCountry";
 import { resolveDisplayCurrency } from "@/server/config/currency";
 import { PLAN_PRICING, type PlanKey } from "@/server/config/pricing";
 
-function formatDisplayPrice(plan: string, currency: "usd" | "gbp" | "eur" | "ngn") {
+function formatDisplayPrice(
+  plan: string,
+  currency: "usd" | "gbp" | "eur" | "ngn",
+) {
   const pricing = PLAN_PRICING[plan as PlanKey];
   if (!pricing) return null;
   return new Intl.NumberFormat(undefined, {
@@ -105,7 +115,11 @@ export default async function BillingPage({
       </Box>
 
       {isOwner && (
-        <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap="4" mb="6">
+        <Grid
+          templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }}
+          gap="4"
+          mb="6"
+        >
           {Object.entries(billing.plans).map(([key, plan]: [string, any]) => (
             <Box
               key={key}
@@ -121,10 +135,21 @@ export default async function BillingPage({
                 {plan.name}
               </Text>
               {key !== "free" && (
-                <Text fontSize="lg" fontWeight="bold" color="text.primary" mb="1">
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                  color="text.primary"
+                  mb="1"
+                >
                   {formatDisplayPrice(key, displayCurrency)}
-                  <Text as="span" fontSize="xs" fontWeight="normal" color="text.muted">
-                    {" "}/mo
+                  <Text
+                    as="span"
+                    fontSize="xs"
+                    fontWeight="normal"
+                    color="text.muted"
+                  >
+                    {" "}
+                    /mo
                   </Text>
                 </Text>
               )}
@@ -171,7 +196,12 @@ export default async function BillingPage({
                 </form>
               )}
               {key === "enterprise" && (
-                <Text fontSize="xs" color="text.muted" textAlign="center" mt="2">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  textAlign="center"
+                  mt="2"
+                >
                   Higher volume or a custom contract?{" "}
                   <ChakraLink
                     href="mailto:support@straffy.dev?subject=Enterprise%20plan%20inquiry"
@@ -201,31 +231,80 @@ export default async function BillingPage({
             No invoices yet.
           </Text>
         ) : (
-          <Flex direction="column" gap="2">
-            {billing.invoices.map((inv) => (
-              <Flex
-                key={inv.id}
-                justify="space-between"
-                fontSize="sm"
-                py="2"
-                borderBottom="1px solid"
-                borderColor="border.subtle"
-              >
-                <Text color="text.secondary">
-                  {new Date(inv.date).toLocaleDateString()}
-                </Text>
-                <Text color="text.secondary">
-                  {new Intl.NumberFormat(undefined, {
-                    style: "currency",
-                    currency: inv.currency,
-                  }).format(inv.amount)}
-                </Text>
-                <Text color="text.muted" textTransform="capitalize">
-                  {inv.status}
-                </Text>
-              </Flex>
-            ))}
-          </Flex>
+          <Table.Root size="sm" variant="outline">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Date</Table.ColumnHeader>
+                <Table.ColumnHeader>Amount</Table.ColumnHeader>
+                <Table.ColumnHeader>Currency</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="end">Invoice</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              {billing.invoices.map((inv) => (
+                <Table.Row key={inv.id}>
+                  <Table.Cell>
+                    {new Date(inv.date).toLocaleDateString()}
+                  </Table.Cell>
+
+                  <Table.Cell fontWeight="medium">
+                    {new Intl.NumberFormat(undefined, {
+                      style: "currency",
+                      currency: inv.currency,
+                    }).format(inv.amount)}
+                  </Table.Cell>
+
+                  <Table.Cell>{inv.currency.toUpperCase()}</Table.Cell>
+
+                  <Table.Cell textTransform="capitalize">
+                    {inv.status ?? "—"}
+                  </Table.Cell>
+
+                  <Table.Cell textAlign="end">
+                    {inv.pdf ? (
+                      <ChakraLink
+                        href={inv.pdf}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        color="violet.400"
+                      >
+                        View invoice
+                      </ChakraLink>
+                    ) : (
+                      "—"
+                    )}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+          // <Flex direction="column" gap="2">
+          //   {billing.invoices.map((inv) => (
+          //     <Flex
+          //       key={inv.id}
+          //       justify="space-between"
+          //       fontSize="sm"
+          //       py="2"
+          //       borderBottom="1px solid"
+          //       borderColor="border.subtle"
+          //     >
+          //       <Text color="text.secondary">
+          //         {new Date(inv.date).toLocaleDateString()}
+          //       </Text>
+          //       <Text color="text.secondary">
+          //         {new Intl.NumberFormat(undefined, {
+          //           style: "currency",
+          //           currency: inv.currency,
+          //         }).format(inv.amount)}
+          //       </Text>
+          //       <Text color="text.muted" textTransform="capitalize">
+          //         {inv.status}
+          //       </Text>
+          //     </Flex>
+          //   ))}
+          // </Flex>
         )}
       </Box>
     </>
