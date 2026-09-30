@@ -116,6 +116,26 @@ export interface IComment extends Document {
   updatedAt: Date;
 }
 
+export interface INotification extends Document {
+  _id: Types.ObjectId;
+  // "global" reaches every user on the platform; "org" reaches only the
+  // members of a single organization (billing alerts, invites, promos...).
+  audience: "global" | "org";
+  organization?: Types.ObjectId;
+  type: "announcement" | "system" | "billing" | "invite" | "promo";
+  title: string;
+  body?: string;
+  // Optional call-to-action, e.g. "/dashboard/billing"
+  link?: string;
+  createdBy?: Types.ObjectId;
+  // Denormalized read-state: which users have seen/dismissed it, instead
+  // of fanning out one row per recipient — same trade-off as Document
+  // collaborators.
+  readBy: Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface IContact extends Document {
   _id: Types.ObjectId;
   organization: Types.ObjectId;

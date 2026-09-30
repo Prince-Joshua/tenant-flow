@@ -4,8 +4,8 @@ import { EmotionRegistry } from "../components/ui/emotion-registry";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "TenantFlow",
-  description: "Multi-Tenant SaaS Platform",
+  title: "Straffy",
+  description: "Multi-Workspace SaaS Platform",
 };
 
 export default function RootLayout({

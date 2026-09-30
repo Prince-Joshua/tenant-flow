@@ -8,6 +8,7 @@ import { requireRole } from "@/server/utils/roles";
 import { generateRandomToken } from "@/server/utils/tokens";
 import { sendInviteEmail } from "@/server/utils/email";
 import logActivity from "@/server/utils/activityLogger";
+import { notifyOrg } from "@/server/utils/notify";
 import AppError from "@/server/utils/appError";
 import type { ActionState } from "./types";
 
@@ -94,6 +95,14 @@ export async function inviteMemberAction(
       action: "MEMBER_INVITED",
       resource: "membership",
       meta: { invitedEmail: email, role: assignedRole },
+    });
+    // Only this org's members see this — not a platform-wide announcement.
+    await notifyOrg({
+      organization: org._id,
+      type: "invite",
+      title: `${user.name} invited ${email} to join ${org.name}`,
+      body: `Role: ${assignedRole}`,
+      link: "/dashboard/members",
     });
   } catch (err) {
     return { error: err instanceof AppError ? err.message : "Invite failed" };

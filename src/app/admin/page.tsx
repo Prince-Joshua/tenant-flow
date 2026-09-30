@@ -11,7 +11,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <>
-      <PageHeader title="Platform" subtitle="Overview across every tenant" />
+      <PageHeader title="Platform" subtitle="Overview across every workspace" />
 
       <Grid
         templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}

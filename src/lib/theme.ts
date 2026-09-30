@@ -7,6 +7,10 @@ const config = defineConfig({
       color: "#f9fafb",
       fontFamily: `'Inter', 'Segoe UI', sans-serif`,
     },
+    html: {
+      scrollBehavior: "smooth",
+      _motionReduce: { scrollBehavior: "auto" },
+    },
     "::selection": { bg: "#8b5cf6", color: "white" },
     "::-webkit-scrollbar": { width: "6px" },
     "::-webkit-scrollbar-thumb": { bg: "#374151", borderRadius: "999px" },

@@ -9,6 +9,7 @@ import { HomeLink } from "../shared/HomeLink";
 export interface SidebarUser {
   name: string;
   email: string;
+  role?: string;
 }
 export interface SidebarOrg {
   name: string;
@@ -28,7 +29,10 @@ const adminItems = [
   { icon: "◈", label: "Organizations", path: "/admin/orgs" },
   { icon: "✦", label: "Users", path: "/admin/users" },
   { icon: "○", label: "Activity", path: "/admin/activity" },
+  { icon: "🔔", label: "Announcements", path: "/admin/announcements" },
+  { icon: "←", label: "Back to app", path: "/dashboard" },
 ];
+const superAdminItem = { icon: "🛡", label: "Admin panel", path: "/admin" };
 
 export default function Sidebar({
   isAdmin = false,
@@ -45,7 +49,11 @@ export default function Sidebar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const items = isAdmin ? adminItems : navItems;
+  const items = isAdmin
+    ? adminItems
+    : user.role === "superadmin"
+      ? [...navItems, superAdminItem]
+      : navItems;
 
   return (
     <Box

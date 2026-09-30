@@ -10,7 +10,7 @@
 //   },
 //   {
 //     icon: "◈",
-//     title: "Per-tenant isolation",
+//     title: "Per-workspace isolation",
 //     body: "Every organization gets its own scoped data, members, and usage limits.",
 //   },
 //   {
@@ -81,7 +81,7 @@
 //           letterSpacing="wide"
 //           textTransform="uppercase"
 //         >
-//           Multi-tenant SaaS platform
+//           Multi-workspace SaaS platform
 //         </Text>
 //         <Text
 //           as="h1"
@@ -101,7 +101,7 @@
 //           maxW="560px"
 //           mb="8"
 //         >
-//           TenantFlow gives every team its own tenant with role-based access,
+//           Straffy gives every team its own workspace with role-based access,
 //           AI-assisted document generation, and billing that just works.
 //         </Text>
 //         <Flex gap="3">
@@ -188,7 +188,7 @@
 //         borderColor="border.subtle"
 //       >
 //         <Text fontSize="xs" color="text.muted">
-//           © {new Date().getFullYear()} TenantFlow LLC
+//           © {new Date().getFullYear()} Straffy LLC
 //         </Text>
 //         <ChakraLink
 //           href="/terms"
@@ -220,7 +220,7 @@ const navLinks = [
 
 export default function HomePage() {
   return (
-    <Box minH="100vh" bg="bg.canvas" overflowX="hidden">
+    <Box minH="100vh" bg="bg.canvas" overflowX="clip">
       <Flex
         as="nav"
         position="sticky"
@@ -249,15 +249,17 @@ export default function HomePage() {
           style={{ transform: "translateX(-50%)" }}
         >
           {navLinks.map((link) => (
-            <ChakraLink
+            <Box
+              as="a"
               key={link.href}
               href={link.href}
               fontSize="sm"
               color="text.secondary"
+              cursor="pointer"
               _hover={{ color: "text.primary" }}
             >
               {link.label}
-            </ChakraLink>
+            </Box>
           ))}
         </Flex>
 
@@ -291,15 +293,15 @@ export default function HomePage() {
 
       <HomeHero />
 
-      <Box id="features">
+      <Box id="features" scrollMarginTop="80px">
         <HomeFeatures />
       </Box>
 
-      <Box id="pricing">
+      <Box id="pricing" scrollMarginTop="80px">
         <HomePricing />
       </Box>
 
-      <Box id="reviews">
+      <Box id="reviews" scrollMarginTop="80px">
         <HomeTestimonials />
       </Box>
 
@@ -360,7 +362,7 @@ export default function HomePage() {
             px="5"
             py="5"
           >
-            © {new Date().getFullYear()} TenantFlow LLC. All rights reserved.
+            © {new Date().getFullYear()} Straffy LLC. All rights reserved.
           </Text>
         </Box>
       </Box>

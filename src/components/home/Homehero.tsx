@@ -90,6 +90,7 @@ export function HomeHero() {
         <Reveal y={14} duration={0.5}>
           <Text
             maxW={"fit-content"}
+            mx="auto"
             fontSize="xs"
             fontWeight="semibold"
             color="violet.400"
@@ -115,6 +116,7 @@ export function HomeHero() {
             color="text.primary"
             letterSpacing="tight"
             maxW="760px"
+            mx="auto"
             lineHeight="1.15"
             mb="5"
           >
@@ -127,9 +129,10 @@ export function HomeHero() {
             fontSize={{ base: "md", md: "lg" }}
             color="text.secondary"
             maxW="600px"
+            mx="auto"
             mb="8"
           >
-            TenantFlow gives every team its own isolated tenant — role-based
+            Straffy gives every team its own isolated workspace — role-based
             access, an AI writing assistant for contracts and reports, and
             subscription billing that's ready from day one.
           </Text>
@@ -255,7 +258,7 @@ export function HomeHero() {
                   <Box w="2.5" h="2.5" borderRadius="full" bg="amber.500" />
                   <Box w="2.5" h="2.5" borderRadius="full" bg="emerald.500" />
                   <Text fontSize="xs" color="text.muted" ml="3">
-                    app.tenantflow.io/acme-co/documents
+                    app.straffy.io/acme-co/documents
                   </Text>
                 </Flex>
 
@@ -380,7 +383,7 @@ export function HomeHero() {
                       bg="bg.canvas"
                     >
                       <Text fontSize="xs" color="text.muted" flex="1">
-                        Ask TenantFlow to draft, revise, or summarize…
+                        Ask Straffy to draft, revise, or summarize…
                       </Text>
                       <MotionBox
                         as={motion.div}

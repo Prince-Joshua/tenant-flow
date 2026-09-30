@@ -14,8 +14,8 @@ const sendEmail = async (
   try {
     await brevo.transactionalEmails.sendTransacEmail({
       sender: {
-        name: "TenantFlow",
-        email: process.env.BREVO_SENDER_EMAIL ?? "onboarding@tenantflow.dev",
+        name: "Straffy",
+        email: process.env.BREVO_SENDER_EMAIL ?? "onboarding@straffy.dev",
       },
       to: [{ email: to }],
       subject,
@@ -35,10 +35,10 @@ export const sendVerificationEmail = async (
   const url = `${process.env.APP_URL}/verify-email?token=${token}`;
   return sendEmail(
     email,
-    "Verify your TenantFlow account",
+    "Verify your Straffy account",
     `
     <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
-      <h2>Welcome to TenantFlow</h2>
+      <h2>Welcome to Straffy</h2>
       <p>Click below to verify your email address.</p>
       <a href="${url}" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Verify Email</a>
       <p style="color:#888;font-size:0.85rem;margin-top:16px">This link expires in 24 hours.</p>
@@ -54,7 +54,7 @@ export const sendPasswordResetEmail = async (
   const url = `${process.env.APP_URL}/reset-password?token=${token}`;
   return sendEmail(
     email,
-    "Reset your TenantFlow password",
+    "Reset your Straffy password",
     `
     <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
       <h2>Password Reset</h2>
@@ -75,11 +75,11 @@ export const sendInviteEmail = async (
   const url = `${process.env.APP_URL}/invite/accept?token=${token}`;
   return sendEmail(
     email,
-    `You've been invited to join ${orgName} on TenantFlow`,
+    `You've been invited to join ${orgName} on Straffy`,
     `
     <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
       <h2>You've been invited</h2>
-      <p><strong>${inviterName}</strong> has invited you to join <strong>${orgName}</strong> on TenantFlow.</p>
+      <p><strong>${inviterName}</strong> has invited you to join <strong>${orgName}</strong> on Straffy.</p>
       <a href="${url}" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Accept Invite</a>
       <p style="color:#888;font-size:0.85rem;margin-top:16px">This invite expires in 48 hours.</p>
     </div>
@@ -111,7 +111,7 @@ export const sendDocumentEmail = async (
     `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
       <h2 style="margin-bottom:4px">${safeTitle}</h2>
-      <p style="color:#555">Shared by <strong>${escapeHtml(senderName)}</strong> via TenantFlow.</p>
+      <p style="color:#555">Shared by <strong>${escapeHtml(senderName)}</strong> via Straffy.</p>
       ${
         safeMessage
           ? `<div style="padding:12px 16px;background:#f4f4f5;border-radius:8px;margin:16px 0;color:#333">${safeMessage.replace(/\n/g, "<br/>")}</div>`

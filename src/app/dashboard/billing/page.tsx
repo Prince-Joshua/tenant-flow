@@ -174,7 +174,7 @@ export default async function BillingPage({
                 <Text fontSize="xs" color="text.muted" textAlign="center" mt="2">
                   Higher volume or a custom contract?{" "}
                   <ChakraLink
-                    href="mailto:support@tenantflow.dev?subject=Enterprise%20plan%20inquiry"
+                    href="mailto:support@straffy.dev?subject=Enterprise%20plan%20inquiry"
                     color="violet.400"
                   >
                     Contact us

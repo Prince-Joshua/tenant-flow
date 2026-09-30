@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import connectDB from "@/server/db";
 import { Organization, Membership } from "@/server/models";
 import { getCurrentUser } from "./auth";
-import { getActiveOrgSlug } from "@/server/session";
+import { getActiveOrgSlug, hasAdminElevation } from "@/server/session";
 import { requireSuperAdminRole } from "@/server/utils/roles";
 import type { IUser, IOrganization, IMembership } from "@/server/types";
 
@@ -38,12 +38,20 @@ export async function requireTenant(): Promise<TenantContext> {
   return { user, org, membership };
 }
 
-export async function requireSuperAdmin(): Promise<IUser> {
+/** Superadmin role only — used by the password prompt page itself. */
+export async function requireSuperAdminNoElevation(): Promise<IUser> {
   const user = await requireUser();
   try {
     requireSuperAdminRole(user);
   } catch {
     redirect("/dashboard");
   }
+  return user;
+}
+
+/** Superadmin role AND a fresh password re-entry (see /admin-verify). */
+export async function requireSuperAdmin(): Promise<IUser> {
+  const user = await requireSuperAdminNoElevation();
+  if (!(await hasAdminElevation(String(user._id)))) redirect("/admin-verify");
   return user;
 }

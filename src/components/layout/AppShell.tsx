@@ -4,7 +4,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
+import NotificationBell from "./NotificationBell";
 import type { SidebarUser, SidebarOrg } from "./Sidebar";
+import type { NotificationItem } from "@/server/data/notifications";
 
 function AnimatedPage({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -30,11 +32,13 @@ export default function AppShell({
   isAdmin = false,
   user,
   activeOrg,
+  notifications = [],
 }: {
   children: React.ReactNode;
   isAdmin?: boolean;
   user: SidebarUser;
   activeOrg?: SidebarOrg | null;
+  notifications?: NotificationItem[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -96,12 +100,23 @@ export default function AppShell({
             fontWeight="semibold"
             color="text.primary"
             truncate
+            flex="1"
           >
             {activeOrg?.name ?? "Menu"}
           </Text>
+          <NotificationBell initialNotifications={notifications} />
         </Flex>
 
-        <Box p="8">
+        <Flex
+          display={{ base: "none", md: "flex" }}
+          justify="flex-end"
+          px="8"
+          pt="6"
+        >
+          <NotificationBell initialNotifications={notifications} />
+        </Flex>
+
+        <Box p="8" pt={{ base: "8", md: "2" }}>
           <Box maxW="1100px" mx="auto">
             <Suspense fallback={children}>
               <AnimatedPage>{children}</AnimatedPage>

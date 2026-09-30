@@ -8,6 +8,7 @@ import {
   IActivityLog,
   IComment,
   IContact,
+  INotification,
 } from "../types";
 
 const userSchema = new Schema<IUser>(
@@ -231,3 +232,30 @@ contactSchema.index({ organization: 1, email: 1 }, { unique: true });
 export const Contact =
   (mongoose.models.Contact as mongoose.Model<IContact>) ||
   mongoose.model<IContact>("Contact", contactSchema);
+
+const notificationSchema = new Schema<INotification>(
+  {
+    audience: { type: String, enum: ["global", "org"], required: true },
+    organization: { type: Schema.Types.ObjectId, ref: "Organization" },
+    type: {
+      type: String,
+      enum: ["announcement", "system", "billing", "invite", "promo"],
+      default: "announcement",
+    },
+    title: { type: String, required: true, trim: true },
+    body: { type: String, trim: true, maxlength: 2000 },
+    link: String,
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+    readBy: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+    },
+  },
+  { timestamps: true },
+);
+
+notificationSchema.index({ audience: 1, organization: 1, createdAt: -1 });
+
+export const Notification =
+  (mongoose.models.Notification as mongoose.Model<INotification>) ||
+  mongoose.model<INotification>("Notification", notificationSchema);

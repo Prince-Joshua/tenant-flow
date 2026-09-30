@@ -3,6 +3,7 @@ import connectDB from "@/server/db";
 import stripe from "@/server/config/stripe";
 import { Organization } from "@/server/models";
 import PLANS from "@/server/config/plans";
+import { notifyOrg } from "@/server/utils/notify";
 import type Stripe from "stripe";
 
 function getSubscriptionPeriodEnd(sub: Stripe.Subscription): Date {
@@ -97,6 +98,13 @@ export async function POST(req: NextRequest) {
         if (org) {
           org.subscriptionStatus = "past_due";
           await org.save();
+          await notifyOrg({
+            organization: org._id,
+            type: "billing",
+            title: "Your last payment failed",
+            body: "Please update your billing details to avoid losing access.",
+            link: "/dashboard/billing",
+          });
         }
         break;
       }
@@ -114,6 +122,13 @@ export async function POST(req: NextRequest) {
         org.limits = PLANS.free.limits;
         org.usage.documentsGenerated = 0;
         await org.save();
+        await notifyOrg({
+          organization: org._id,
+          type: "billing",
+          title: "Your subscription has ended",
+          body: "Your workspace is now on the Free plan.",
+          link: "/dashboard/billing",
+        });
         break;
       }
     }

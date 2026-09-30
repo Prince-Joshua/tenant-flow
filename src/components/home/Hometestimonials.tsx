@@ -8,7 +8,7 @@ import { MotionBox } from "../shared/MotionBox";
 const testimonials = [
   {
     quote:
-      "We used to lose an afternoon a week drafting renewal notices by hand. TenantFlow drafts them in seconds and routes them for approval automatically.",
+      "We used to lose an afternoon a week drafting renewal notices by hand. Straffy drafts them in seconds and routes them for approval automatically.",
     name: "Dana Ilford",
     title: "Operations Lead, Fieldstone Property Group",
   },
@@ -26,7 +26,7 @@ const testimonials = [
   },
   {
     quote:
-      "Billing just works. Usage metering per tenant meant we could finally see which accounts were actually profitable.",
+      "Billing just works. Usage metering per workspace meant we could finally see which accounts were actually profitable.",
     name: "Tomás Rivera",
     title: "Finance Director, Loop Systems",
   },
@@ -38,7 +38,7 @@ const testimonials = [
   },
   {
     quote:
-      "Migrating three regional teams onto separate tenants took an afternoon, not a quarter. Isolation was the whole reason we switched.",
+      "Migrating three regional teams onto separate workspaces took an afternoon, not a quarter. Isolation was the whole reason we switched.",
     name: "Ben Okafor",
     title: "CTO, Harborline Consulting",
   },

@@ -16,7 +16,7 @@ export default async function PublicDocumentPage({
     <Box minH="100vh" bg="bg.canvas">
       <Box maxW="720px" mx="auto" px="5" py={{ base: "12", md: "16" }}>
         <Text fontSize="xs" color="text.muted" mb="2">
-          Shared via TenantFlow — read only
+          Shared via Straffy — read only
         </Text>
         <Text
           as="h1"

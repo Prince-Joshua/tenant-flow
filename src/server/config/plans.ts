@@ -1,28 +1,21 @@
 import type { PlanConfig } from "@tenantflow/types";
+import { PLAN_LIMITS } from "./planLimits";
 
 const PLANS: Record<string, PlanConfig> = {
   free: {
     name: "Free",
     priceId: process.env.STRIPE_FREE_PRICE_ID,
-    limits: { documentsPerCycle: 5, membersAllowed: 1, contactsAllowed: 25 },
+    limits: { ...PLAN_LIMITS.free },
   },
   pro: {
     name: "Pro",
     priceId: process.env.STRIPE_PRO_PRICE_ID,
-    limits: {
-      documentsPerCycle: 100,
-      membersAllowed: 10,
-      contactsAllowed: 500,
-    },
+    limits: { ...PLAN_LIMITS.pro },
   },
   enterprise: {
     name: "Enterprise",
     priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
-    limits: {
-      documentsPerCycle: 999999,
-      membersAllowed: 999999,
-      contactsAllowed: 999999,
-    },
+    limits: { ...PLAN_LIMITS.enterprise },
   },
 };
 

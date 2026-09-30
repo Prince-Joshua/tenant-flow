@@ -17,10 +17,10 @@ export function HomeLink() {
           color="white"
           style={{ boxShadow: "0 0 20px rgba(139,92,246,0.4)" }}
         >
-          T
+          S
         </Box>
         <Text fontSize="lg" fontWeight="bold" color="text.primary">
-          TenantFlow
+          Straffy
         </Text>
       </Flex>
     </ChakraLink>

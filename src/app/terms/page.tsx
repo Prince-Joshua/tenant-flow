@@ -10,9 +10,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         These Terms of Service (&quot;Terms&quot;) are an agreement between you
-        (&quot;you&quot; or &quot;User&quot;) and TenantFlow
-        (&quot;TenantFlow,&quot; &quot;we,&quot; &quot;us,&quot; or
-        &quot;our&quot;), governing your access to and use of the TenantFlow
+        (&quot;you&quot; or &quot;User&quot;) and Straffy
+        (&quot;Straffy,&quot; &quot;we,&quot; &quot;us,&quot; or
+        &quot;our&quot;), governing your access to and use of the Straffy
         application, including our website, dashboard, APIs, and any related
         services (collectively, the &quot;Service&quot;). By creating an account
         or otherwise using the Service, you agree to be bound by these Terms.
@@ -38,7 +38,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <Stack gap="3">
         <Text>
-          TenantFlow is offered on Free, Pro, and Enterprise plans. Each plan
+          Straffy is offered on Free, Pro, and Enterprise plans. Each plan
           includes a specific document-generation allowance per billing cycle
           and a limit on the number of members per organization, as shown on our
           <ChakraLink
@@ -131,7 +131,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <>
         The Service is provided &quot;as is&quot; and &quot;as available&quot;
         without warranties of any kind, whether express or implied. To the
-        fullest extent permitted by law, TenantFlow will not be liable for any
+        fullest extent permitted by law, Straffy will not be liable for any
         indirect, incidental, special, or consequential damages, or for any loss
         of data, revenue, or profits, arising from your use of the Service.
       </>
@@ -153,8 +153,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         If you have questions about these Terms, contact us at{" "}
-        <ChakraLink href="mailto:support@tenantflow.dev" color="violet.400">
-          support@tenantflow.
+        <ChakraLink href="mailto:support@straffy.dev" color="violet.400">
+          support@straffy.dev
         </ChakraLink>
       </>
     ),

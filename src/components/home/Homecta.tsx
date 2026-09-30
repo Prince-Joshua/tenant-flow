@@ -66,7 +66,7 @@ export function HomeCTA() {
               mx="auto"
               mb="8"
             >
-              Spin up your first tenant in minutes — no credit card required to
+              Spin up your first workspace in minutes — no credit card required to
               start.
             </Text>
           </Reveal>

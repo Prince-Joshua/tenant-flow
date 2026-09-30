@@ -8,8 +8,10 @@ import {
   ActivityLog,
 } from "@/server/models";
 import type { IOrganization } from "@/server/types";
+import { requireSuperAdmin } from "@/server/data/tenant";
 
 export async function getAdminStats() {
+  await requireSuperAdmin();
   await connectDB();
   const [
     totalUsers,
@@ -56,6 +58,7 @@ export async function getAllOrgs({
   search?: string;
   plan?: IOrganization["plan"] | "";
 } = {}) {
+  await requireSuperAdmin();
   await connectDB();
   const query = {
     ...(search && { name: { $regex: search, $options: "i" } }),
@@ -92,6 +95,7 @@ export async function getAllUsers({
   limit = 20,
   search = "",
 }: { page?: number; limit?: number; search?: string } = {}) {
+  await requireSuperAdmin();
   await connectDB();
   const query = search
     ? {
@@ -116,6 +120,7 @@ export async function getAllUsers({
 }
 
 export async function getPlatformActivity(limit = 50) {
+  await requireSuperAdmin();
   await connectDB();
   return ActivityLog.find()
     .sort({ createdAt: -1 })

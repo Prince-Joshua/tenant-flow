@@ -6,57 +6,82 @@ import { LuCheck } from "react-icons/lu";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import { Reveal, RevealStagger, StaggerItem } from "./Reveal";
 import { MotionBox } from "../shared/MotionBox";
+import {
+  PLAN_PRICING,
+  type DisplayCurrency,
+  type PlanKey,
+} from "@/server/config/pricing";
+import { PLAN_LIMITS } from "@/server/config/planLimits";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "$0",
-    period: "/month",
-    blurb: "For a single organization getting off the ground.",
-    features: [
-      "1 tenant workspace",
-      "Up to 5 members",
-      "25 AI-generated documents / mo",
-      "Core role-based access",
-    ],
-    cta: "Start for free",
-    href: "/register",
-    highlighted: false,
-  },
-  {
-    name: "Growth",
-    price: "$79",
-    period: "/month",
-    blurb: "For teams running day-to-day operations on TenantFlow.",
-    features: [
-      "1 tenant workspace",
-      "Unlimited members",
-      "500 AI-generated documents / mo",
-      "Approval workflows & audit log",
-      "Self-serve billing portal",
-    ],
-    cta: "Start your trial",
-    href: "/register",
-    highlighted: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    blurb: "For platforms managing many tenants at scale.",
-    features: [
-      "Unlimited tenant workspaces",
-      "SSO & advanced admin controls",
-      "Custom usage limits",
-      "Priority support & SLA",
-    ],
-    cta: "Talk to sales",
-    href: "/register",
-    highlighted: false,
-  },
-];
+const UNLIMITED = 999999;
 
-export function HomePricing() {
+const fmtLimit = (n: number) =>
+  n >= UNLIMITED ? "Unlimited" : n.toLocaleString();
+
+const fmtPrice = (amount: number, currency: DisplayCurrency) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+function buildFeatures(plan: keyof typeof PLAN_LIMITS) {
+  const l = PLAN_LIMITS[plan];
+  return [
+    `${fmtLimit(l.documentsPerCycle)} AI-generated documents / cycle`,
+    `${fmtLimit(l.membersAllowed)} ${l.membersAllowed === 1 ? "seat" : "seats"}`,
+    `${fmtLimit(l.contactsAllowed)} contacts`,
+    "Role-based access",
+    "Approval workflows & audit log",
+  ];
+}
+
+function buildPlans(currency: DisplayCurrency) {
+  const price = (plan: PlanKey) =>
+    fmtPrice(PLAN_PRICING[plan].display[currency], currency);
+
+  return [
+    {
+      name: "Free",
+      price: fmtPrice(0, currency),
+      period: "/mo",
+      blurb: "For a single organization getting off the ground.",
+      features: buildFeatures("free"),
+      cta: "Start for free",
+      href: "/register",
+      highlighted: false,
+    },
+    {
+      name: "Pro",
+      price: price("pro"),
+      period: "/mo",
+      blurb: "For teams running day-to-day operations.",
+      features: [...buildFeatures("pro"), "Self-serve billing portal"],
+      cta: "Get Pro",
+      href: "/register",
+      highlighted: true,
+    },
+    {
+      name: "Enterprise",
+      price: price("enterprise"),
+      period: "/mo",
+      blurb: "For organizations operating at scale.",
+      features: [...buildFeatures("enterprise"), "Self-serve billing portal"],
+      cta: "Get Enterprise",
+      href: "/register",
+      highlighted: false,
+    },
+  ];
+}
+
+export function HomePricing({
+  currency = "usd",
+}: {
+  currency?: DisplayCurrency;
+}) {
+  const plans = buildPlans(currency);
+  const isEstimate = currency === "gbp" || currency === "eur";
+
   return (
     <Box py={{ base: "16", md: "24" }} px={{ base: "5", md: "10" }}>
       <Reveal y={16}>
@@ -72,7 +97,7 @@ export function HomePricing() {
             Choose a plan to get started
           </Text>
           <Text fontSize="sm" color="text.secondary" maxW="480px">
-            Every plan includes a fully isolated tenant, role-based access, and
+            Every plan includes a fully isolated workspace, role-based access, and
             the same AI writing assistant.
           </Text>
         </Flex>
@@ -154,6 +179,11 @@ export function HomePricing() {
                     </Text>
                   )}
                 </Flex>
+                {isEstimate && plan.name !== "Free" && (
+                  <Text fontSize="xs" color="text.muted" mb="2">
+                    Estimated — exact amount shown at checkout
+                  </Text>
+                )}
                 <Text fontSize="sm" color="text.secondary" mb="6" minH="40px">
                   {plan.blurb}
                 </Text>

@@ -263,14 +263,14 @@ const featureRows = [
   {
     eyebrow: "AI document generation",
     title: "Built to draft the real documents your team needs",
-    body: "TenantFlow's writing assistant drafts contracts, renewal notices, proposals, and reports from a single prompt — then lets your team regenerate, edit, and route anything for approval before it ships.",
+    body: "Straffy's writing assistant drafts contracts, renewal notices, proposals, and reports from a single prompt — then lets your team regenerate, edit, and route anything for approval before it ships.",
     Mockup: DocGenMockup,
     reverse: false,
   },
   {
-    eyebrow: "Per-tenant isolation",
-    title: "Designed for strict multi-tenant isolation",
-    body: "Every organization gets its own scoped data, members, documents, and usage limits. Nothing crosses tenant boundaries — by architecture, not by convention.",
+    eyebrow: "Per-workspace isolation",
+    title: "Designed for strict workspace isolation",
+    body: "Every organization gets its own scoped data, members, documents, and usage limits. Nothing crosses workspace boundaries — by architecture, not by convention.",
     Mockup: IsolationMockup,
     reverse: true,
   },
@@ -284,7 +284,7 @@ const featureRows = [
   {
     eyebrow: "Built-in billing",
     title: "Made for always-on subscription billing",
-    body: "Stripe-backed subscriptions, per-tenant usage metering, and a self-serve billing portal mean upgrades, downgrades, and invoices handle themselves.",
+    body: "Stripe-backed subscriptions, per-workspace usage metering, and a self-serve billing portal mean upgrades, downgrades, and invoices handle themselves.",
     Mockup: BillingMockup,
     reverse: true,
   },
@@ -324,7 +324,7 @@ export function HomeFeatures() {
           px="5"
           mb={{ base: "14", md: "20" }}
         >
-          The best way to run a multi-tenant business
+          The best way to run a multi-workspace business
         </Text>
       </Reveal>
 
