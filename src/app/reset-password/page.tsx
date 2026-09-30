@@ -1,6 +1,7 @@
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import { backdropProps, cardProps } from "@/lib/cardStyles";
 
 export default async function ResetPasswordPage({
   searchParams,
@@ -9,11 +10,9 @@ export default async function ResetPasswordPage({
 }) {
   const { token } = await searchParams;
   return (
-    <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
+    <Flex minH="100vh" align="center" justify="center" {...backdropProps} px="4">
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
+        {...cardProps}
         borderRadius="2xl"
         p="10"
         w="full"

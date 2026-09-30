@@ -5,6 +5,19 @@ import { useRouter, usePathname } from "next/navigation";
 import { PlanBadge } from "@/components/shared";
 import { logoutAction } from "@/server/actions/auth";
 import { HomeLink } from "../shared/HomeLink";
+import {
+  LuLayoutDashboard,
+  LuFileText,
+  LuUsers,
+  LuContact,
+  LuCreditCard,
+  LuSettings,
+  LuBuilding2,
+  LuActivity,
+  LuBell,
+  LuShield,
+  LuArrowLeft,
+} from "react-icons/lu";
 
 export interface SidebarUser {
   name: string;
@@ -17,22 +30,22 @@ export interface SidebarOrg {
 }
 
 const navItems = [
-  { icon: "⬡", label: "Overview", path: "/dashboard" },
-  { icon: "✦", label: "Documents", path: "/dashboard/documents" },
-  { icon: "◈", label: "Members", path: "/dashboard/members" },
-  { icon: "☰", label: "Contacts", path: "/dashboard/contacts" },
-  { icon: "◇", label: "Billing", path: "/dashboard/billing" },
-  { icon: "○", label: "Settings", path: "/dashboard/settings" },
+  { icon: LuLayoutDashboard, label: "Overview", path: "/dashboard" },
+  { icon: LuFileText, label: "Documents", path: "/dashboard/documents" },
+  { icon: LuUsers, label: "Members", path: "/dashboard/members" },
+  { icon: LuContact, label: "Contacts", path: "/dashboard/contacts" },
+  { icon: LuCreditCard, label: "Billing", path: "/dashboard/billing" },
+  { icon: LuSettings, label: "Settings", path: "/dashboard/settings" },
 ];
 const adminItems = [
-  { icon: "⬡", label: "Platform", path: "/admin" },
-  { icon: "◈", label: "Organizations", path: "/admin/orgs" },
-  { icon: "✦", label: "Users", path: "/admin/users" },
-  { icon: "○", label: "Activity", path: "/admin/activity" },
-  { icon: "🔔", label: "Announcements", path: "/admin/announcements" },
-  { icon: "←", label: "Back to app", path: "/dashboard" },
+  { icon: LuLayoutDashboard, label: "Platform", path: "/admin" },
+  { icon: LuBuilding2, label: "Organizations", path: "/admin/orgs" },
+  { icon: LuUsers, label: "Users", path: "/admin/users" },
+  { icon: LuActivity, label: "Activity", path: "/admin/activity" },
+  { icon: LuBell, label: "Announcements", path: "/admin/announcements" },
+  { icon: LuArrowLeft, label: "Back to app", path: "/dashboard" },
 ];
-const superAdminItem = { icon: "🛡", label: "Admin panel", path: "/admin" };
+const superAdminItem = { icon: LuShield, label: "Admin panel", path: "/admin" };
 
 export default function Sidebar({
   isAdmin = false,
@@ -164,9 +177,9 @@ export default function Sidebar({
                     }}
                   />
                 )}
-                <Text fontSize="sm" position="relative" zIndex={1}>
-                  {item.icon}
-                </Text>
+                <Box position="relative" zIndex={1} display="flex">
+                  <item.icon size={16} />
+                </Box>
                 <Text
                   fontSize="sm"
                   fontWeight={isActive ? "semibold" : "medium"}

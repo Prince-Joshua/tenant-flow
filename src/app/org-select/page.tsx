@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUserWithMemberships } from "@/server/data/auth";
 import { selectOrgAction } from "@/server/actions/auth";
 import { PlanBadge } from "@/components/shared";
+import { backdropProps, cardProps } from "@/lib/cardStyles";
 
 export default async function OrgSelectPage() {
   const result = await getCurrentUserWithMemberships();
@@ -10,7 +11,7 @@ export default async function OrgSelectPage() {
   const { memberships } = result;
 
   return (
-    <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
+    <Flex minH="100vh" align="center" justify="center" {...backdropProps} px="4">
       <Box w="full" maxW="480px">
         <Text fontSize="2xl" fontWeight="bold" color="text.primary" mb="2">
           Choose a workspace
@@ -29,10 +30,7 @@ export default async function OrgSelectPage() {
                 justifyContent="flex-start"
                 fontWeight="normal"
                 textAlign="left"
-                bg="bg.surface"
-                border="1px solid"
-                borderColor="border.subtle"
-                borderRadius="xl"
+                {...cardProps}
                 p="5"
                 cursor="pointer"
                 transition="all 0.15s"

@@ -1,4 +1,4 @@
-# TenantFlow
+# Straffy
 
 A production-grade multi-tenant SaaS platform built as a single Next.js 16 App Router application, using Server Components and Server Actions end to end — no separate backend. Features cookie-based session auth, Stripe subscription billing with per-tenant usage metering, role-based access control, and an AI writing assistant powered by Google Gemini.
 

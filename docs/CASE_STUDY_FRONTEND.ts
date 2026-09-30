@@ -4,7 +4,7 @@ const tenantFlowFrontend = {
   detailedCaseStudyData: {
     hero: {
       meta: {
-        title: "TenantFlow Dashboard",
+        title: "Straffy Dashboard",
         stackedTitle: ["Tenant", "Flow", "UI"],
         subtitle:
           "A production-grade Next.js 14 App Router dashboard for a multi-tenant SaaS platform — with RTK Query auto-refresh token rotation, per-workspace state isolation, Stripe checkout flows, and an AI document generation UI. Designed, architected, and built by one engineer.",
@@ -261,7 +261,7 @@ const tenantFlowFrontend = {
     featured: true,
     status: "complete",
     type: "SaaS Dashboard · Frontend Architecture",
-    title: "TenantFlow Dashboard",
+    title: "Straffy Dashboard",
     subtitle: "Next.js 14 App Router multi-tenant SaaS frontend",
     description:
       "A typed Next.js 14 App Router dashboard for a multi-tenant SaaS platform. RTK Query handles all data fetching with automatic refresh token rotation. Workspace context is injected globally via the Redux base query. Covers custom Chakra UI v3 theming, typed API endpoints, Stripe checkout flows, and a full admin console. Built solo.",

@@ -165,6 +165,14 @@ const documentSchema = new Schema<IDocument>(
   { timestamps: true },
 );
 
+documentSchema.index({
+  organization: 1,
+  isTemplate: 1,
+  status: 1,
+  createdAt: -1,
+});
+documentSchema.index({ organization: 1, isTemplate: 1, title: 1 });
+
 export const TFDocument =
   (mongoose.models.Document as mongoose.Model<IDocument>) ||
   mongoose.model<IDocument>("Document", documentSchema);
@@ -184,6 +192,9 @@ const activityLogSchema = new Schema<IActivityLog>(
   },
   { timestamps: true },
 );
+
+activityLogSchema.index({ organization: 1, createdAt: -1, _id: -1 });
+activityLogSchema.index({ createdAt: -1, _id: -1 });
 
 export const ActivityLog =
   (mongoose.models.ActivityLog as mongoose.Model<IActivityLog>) ||
@@ -206,7 +217,7 @@ const commentSchema = new Schema<IComment>(
   { timestamps: true },
 );
 
-commentSchema.index({ document: 1, createdAt: 1 });
+commentSchema.index({ document: 1, createdAt: -1, _id: -1 });
 
 export const Comment =
   (mongoose.models.Comment as mongoose.Model<IComment>) ||
@@ -254,7 +265,12 @@ const notificationSchema = new Schema<INotification>(
   { timestamps: true },
 );
 
-notificationSchema.index({ audience: 1, organization: 1, createdAt: -1 });
+notificationSchema.index({
+  audience: 1,
+  organization: 1,
+  createdAt: -1,
+  _id: -1,
+});
 
 export const Notification =
   (mongoose.models.Notification as mongoose.Model<INotification>) ||

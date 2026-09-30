@@ -18,6 +18,7 @@ import {
 import { getUserCountry } from "@/server/geo/getUserCountry";
 import { resolveDisplayCurrency } from "@/server/config/currency";
 import { PLAN_PRICING, type PlanKey } from "@/server/config/pricing";
+import { cardProps } from "@/lib/cardStyles";
 
 function formatDisplayPrice(
   plan: string,
@@ -67,10 +68,7 @@ export default async function BillingPage({
       )}
 
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
-        borderRadius="xl"
+        {...cardProps}
         p="6"
         mb="6"
       >
@@ -217,10 +215,7 @@ export default async function BillingPage({
       )}
 
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
-        borderRadius="xl"
+        {...cardProps}
         p="6"
       >
         <Text fontSize="sm" fontWeight="semibold" color="text.primary" mb="4">

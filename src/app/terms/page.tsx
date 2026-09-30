@@ -1,6 +1,7 @@
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import { HomeLink } from "@/components/shared/HomeLink";
+import { backdropProps } from "@/lib/cardStyles";
 
 const LAST_UPDATED = "September 10, 2026";
 
@@ -163,7 +164,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
 
 export default function TermsPage() {
   return (
-    <Box minH="100vh" bg="bg.canvas">
+    <Box minH="100vh" {...backdropProps}>
       <Flex
         as="nav"
         justify="space-between"

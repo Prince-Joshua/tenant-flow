@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import { Box, Flex, Text, Badge } from "@chakra-ui/react";
+import { cardProps } from "@/lib/cardStyles";
 
 export function StatCard({
   label,
@@ -10,18 +12,15 @@ export function StatCard({
   label: string;
   value: string | number;
   sub?: string;
-  icon?: string;
+  icon?: ReactNode;
   accent?: boolean;
 }) {
   return (
     <Box
-      bg="bg.surface"
-      border="1px solid"
-      borderColor="border.subtle"
-      borderRadius="xl"
+      {...cardProps}
       p="5"
       transition="all 0.2s"
-      _hover={{ borderColor: "border.default" }}
+      _hover={{ borderColor: "brand.border", transform: "translateY(-2px)" }}
     >
       <Flex justify="space-between" align="flex-start">
         <Box>
@@ -51,7 +50,16 @@ export function StatCard({
           )}
         </Box>
         {icon && (
-          <Box bg="brand.subtle" borderRadius="lg" p="2.5" fontSize="lg">
+          <Box
+            bg="brand.subtle"
+            border="1px solid"
+            borderColor="brand.border"
+            color="violet.400"
+            borderRadius="lg"
+            p="2.5"
+            fontSize="lg"
+            display="flex"
+          >
             {icon}
           </Box>
         )}
@@ -147,7 +155,7 @@ export function EmptyState({
   title,
   description,
 }: {
-  icon?: string;
+  icon?: ReactNode;
   title: string;
   description?: string;
 }) {

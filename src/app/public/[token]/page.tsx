@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Box, Text } from "@chakra-ui/react";
 import { getPublicDocument } from "@/server/data/documents";
+import { backdropProps } from "@/lib/cardStyles";
 
 export default async function PublicDocumentPage({
   params,
@@ -13,7 +14,7 @@ export default async function PublicDocumentPage({
   if (!doc) notFound();
 
   return (
-    <Box minH="100vh" bg="bg.canvas">
+    <Box minH="100vh" {...backdropProps}>
       <Box maxW="720px" mx="auto" px="5" py={{ base: "12", md: "16" }}>
         <Text fontSize="xs" color="text.muted" mb="2">
           Shared via Straffy — read only

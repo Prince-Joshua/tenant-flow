@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import NotificationBell from "./NotificationBell";
 import type { SidebarUser, SidebarOrg } from "./Sidebar";
 import type { NotificationItem } from "@/server/data/notifications";
+import { backdropProps } from "@/lib/cardStyles";
 
 function AnimatedPage({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -43,7 +44,11 @@ export default function AppShell({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Box display="flex" minH="100vh" bg="bg.canvas">
+    <Box
+      display="flex"
+      minH="100vh"
+      {...backdropProps}
+    >
       <Box
         position="fixed"
         inset="0"
@@ -104,7 +109,10 @@ export default function AppShell({
           >
             {activeOrg?.name ?? "Menu"}
           </Text>
-          <NotificationBell initialNotifications={notifications} />
+          <NotificationBell
+            initialNotifications={notifications}
+            includeOrg={!isAdmin}
+          />
         </Flex>
 
         <Flex
@@ -113,7 +121,10 @@ export default function AppShell({
           px="8"
           pt="6"
         >
-          <NotificationBell initialNotifications={notifications} />
+          <NotificationBell
+            initialNotifications={notifications}
+            includeOrg={!isAdmin}
+          />
         </Flex>
 
         <Box p="8" pt={{ base: "8", md: "2" }}>

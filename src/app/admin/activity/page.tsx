@@ -1,13 +1,18 @@
-import { getPlatformActivity } from "@/server/data/admin";
+import { getPlatformActivityPage } from "@/server/data/admin";
+import { loadMorePlatformActivityAction } from "@/server/actions/pagination";
 import PageHeader from "@/components/layout/PageHeader";
-import { ActivityFeed } from "@/components/shared";
+import PagedActivityFeed from "@/components/shared/PagedActivityFeed";
 
 export default async function AdminActivityPage() {
-  const logs = JSON.parse(JSON.stringify(await getPlatformActivity()));
+  const { logs, nextCursor } = await getPlatformActivityPage();
   return (
     <>
       <PageHeader title="Activity" subtitle="Platform-wide audit log" />
-      <ActivityFeed logs={logs} />
+      <PagedActivityFeed
+        initialLogs={logs}
+        initialCursor={nextCursor}
+        loadMore={loadMorePlatformActivityAction}
+      />
     </>
   );
 }

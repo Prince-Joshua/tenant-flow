@@ -3,6 +3,7 @@ import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
 import EmailFailedToast from "@/components/auth/EmailFailedToast";
 import { HomeLink } from "@/components/shared/HomeLink";
+import { backdropProps, cardProps } from "@/lib/cardStyles";
 
 export default async function LoginPage({
   searchParams,
@@ -15,12 +16,10 @@ export default async function LoginPage({
 }) {
   const { registered, reset, emailFailed } = await searchParams;
   return (
-    <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
+    <Flex minH="100vh" align="center" justify="center" {...backdropProps} px="4">
       <EmailFailedToast show={emailFailed === "1"} />
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
+        {...cardProps}
         borderRadius="2xl"
         p="10"
         w="full"

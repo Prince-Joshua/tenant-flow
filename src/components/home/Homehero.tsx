@@ -8,6 +8,8 @@ import {
   LuUsers,
   LuCreditCard,
   LuSettings,
+  LuLayoutDashboard,
+  LuContact,
 } from "react-icons/lu";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import { Float, Reveal } from "./Reveal";
@@ -23,8 +25,10 @@ const trustedBy = [
 ];
 
 const sidebarItems = [
+  { icon: LuLayoutDashboard, label: "Overview", active: false },
   { icon: LuFileText, label: "Documents", active: true },
   { icon: LuUsers, label: "Members", active: false },
+  { icon: LuContact, label: "Contacts", active: false },
   { icon: LuCreditCard, label: "Billing", active: false },
   { icon: LuSettings, label: "Settings", active: false },
 ];

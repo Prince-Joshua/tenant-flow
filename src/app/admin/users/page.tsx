@@ -4,6 +4,8 @@ import { getAllUsers } from "@/server/data/admin";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/shared";
 import { inputStyle } from "@/lib/inputStyles";
+import { cardProps } from "@/lib/cardStyles";
+import { LuUsers } from "react-icons/lu";
 
 export default async function AdminUsersPage({
   searchParams,
@@ -32,7 +34,7 @@ export default async function AdminUsersPage({
       </form>
 
       {!list.length ? (
-        <EmptyState icon="✦" title="No users found" />
+        <EmptyState icon={<LuUsers />} title="No users found" />
       ) : (
         <Flex direction="column" gap="2">
           {list.map((u: any) => (
@@ -40,10 +42,7 @@ export default async function AdminUsersPage({
               key={u._id}
               justify="space-between"
               align="center"
-              bg="bg.surface"
-              border="1px solid"
-              borderColor="border.subtle"
-              borderRadius="xl"
+              {...cardProps}
               p="4"
             >
               <Box>

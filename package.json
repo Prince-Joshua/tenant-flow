@@ -2,7 +2,7 @@
   "name": "tenantflow",
   "version": "1.0.0",
   "private": true,
-  "description": "TenantFlow - Multi-Tenant SaaS Platform (Next.js monorepo, SSR)",
+  "description": "Straffy - Multi-Tenant SaaS Platform (Next.js monorepo, SSR)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

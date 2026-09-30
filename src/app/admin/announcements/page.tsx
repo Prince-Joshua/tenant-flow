@@ -3,6 +3,8 @@ import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/shared";
 import AnnouncementForm from "@/components/admin/AnnouncementForm";
 import { getGlobalAnnouncements } from "@/server/data/notifications";
+import { cardProps } from "@/lib/cardStyles";
+import { LuBell } from "react-icons/lu";
 
 export default async function AdminAnnouncementsPage() {
   const announcementDocs = await getGlobalAnnouncements();
@@ -16,10 +18,7 @@ export default async function AdminAnnouncementsPage() {
       />
 
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
-        borderRadius="xl"
+        {...cardProps}
         p="5"
         mb="8"
       >
@@ -31,16 +30,13 @@ export default async function AdminAnnouncementsPage() {
       </Text>
 
       {!announcements.length ? (
-        <EmptyState icon="🔔" title="No announcements published yet" />
+        <EmptyState icon={<LuBell />} title="No announcements published yet" />
       ) : (
         <Flex direction="column" gap="2">
           {announcements.map((a: any) => (
             <Box
               key={a._id}
-              bg="bg.surface"
-              border="1px solid"
-              borderColor="border.subtle"
-              borderRadius="xl"
+              {...cardProps}
               p="4"
             >
               <Text fontSize="sm" fontWeight="semibold" color="text.primary">

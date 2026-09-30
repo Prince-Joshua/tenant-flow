@@ -9,6 +9,7 @@ import {
 } from "@/server/models";
 import type { IOrganization } from "@/server/types";
 import { requireSuperAdmin } from "@/server/data/tenant";
+import { cursorFilter, cursorSort, toCursorPage } from "@/lib/cursor";
 
 export async function getAdminStats() {
   await requireSuperAdmin();
@@ -126,4 +127,19 @@ export async function getPlatformActivity(limit = 50) {
     .sort({ createdAt: -1 })
     .limit(limit)
     .populate("organization", "name slug");
+}
+
+export async function getPlatformActivityPage({
+  limit = 30,
+  cursor,
+}: { limit?: number; cursor?: string | null } = {}) {
+  await requireSuperAdmin();
+  await connectDB();
+  const rows = await ActivityLog.find(cursorFilter(cursor) ?? {})
+    .sort(cursorSort(-1))
+    .limit(limit + 1)
+    .populate("organization", "name slug")
+    .lean();
+  const { items, nextCursor } = toCursorPage(rows as any[], limit);
+  return { logs: JSON.parse(JSON.stringify(items)) as any[], nextCursor };
 }

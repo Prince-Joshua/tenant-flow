@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { removeContactAction } from "@/server/actions/contacts";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { EmptyState } from "@/components/shared";
+import { cardProps } from "@/lib/cardStyles";
+import { LuContact } from "react-icons/lu";
 
 type ContactItem = {
   _id: string;
@@ -24,7 +26,7 @@ export default function ContactsList({
   if (contacts.length === 0) {
     return (
       <EmptyState
-        icon="☰"
+        icon={<LuContact />}
         title="No contacts yet"
         description="Add customers or other outside contacts you want to send documents and announcements to privately."
       />
@@ -46,10 +48,7 @@ export default function ContactsList({
             <Flex
               justify="space-between"
               align="center"
-              bg="bg.surface"
-              border="1px solid"
-              borderColor="border.subtle"
-              borderRadius="xl"
+              {...cardProps}
               p="4"
             >
               <Flex align="center" gap="3" minW="0">

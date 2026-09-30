@@ -5,6 +5,8 @@ import PageHeader from "@/components/layout/PageHeader";
 import { PlanBadge, EmptyState } from "@/components/shared";
 import OrgAdminControls from "@/components/admin/OrgAdminControls";
 import { inputStyle } from "@/lib/inputStyles";
+import { cardProps } from "@/lib/cardStyles";
+import { LuBuilding2 } from "react-icons/lu";
 
 export default async function AdminOrgsPage({
   searchParams,
@@ -48,7 +50,7 @@ export default async function AdminOrgsPage({
       </form>
 
       {!orgs.length ? (
-        <EmptyState icon="◈" title="No organizations found" />
+        <EmptyState icon={<LuBuilding2 />} title="No organizations found" />
       ) : (
         <Flex direction="column" gap="2">
           {orgs.map((org: any) => (
@@ -56,10 +58,7 @@ export default async function AdminOrgsPage({
               key={org._id}
               justify="space-between"
               align="center"
-              bg="bg.surface"
-              border="1px solid"
-              borderColor="border.subtle"
-              borderRadius="xl"
+              {...cardProps}
               p="4"
               wrap="wrap"
               gap="3"

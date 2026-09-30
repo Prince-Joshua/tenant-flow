@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { ChakraLink } from "@/components/shared/ChakraLink";
 import { verifyEmailToken } from "@/server/actions/auth";
+import { backdropProps, cardProps } from "@/lib/cardStyles";
 
 // A GET link click from an email — verified directly during render via a
 // server-only function, no client-side useVerifyEmailQuery() involved.
@@ -12,11 +13,9 @@ export default async function VerifyEmailPage({
   const { token } = await searchParams;
   const { ok } = await verifyEmailToken(token || "");
   return (
-    <Flex minH="100vh" align="center" justify="center" bg="bg.canvas" px="4">
+    <Flex minH="100vh" align="center" justify="center" {...backdropProps} px="4">
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
+        {...cardProps}
         borderRadius="2xl"
         p="10"
         w="full"

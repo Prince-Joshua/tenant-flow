@@ -5,7 +5,7 @@ const config = defineConfig({
     "html, body": {
       bg: "#080c12",
       color: "#f9fafb",
-      fontFamily: `'Inter', 'Segoe UI', sans-serif`,
+      fontFamily: `var(--font-inter), 'Inter', 'Segoe UI', sans-serif`,
     },
     html: {
       scrollBehavior: "smooth",

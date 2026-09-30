@@ -7,6 +7,7 @@ import { SubmitButton } from "@/components/shared/SubmitButton";
 import { removeMemberAction } from "@/server/actions/org";
 import InviteForm from "@/components/members/InviteForm";
 import RoleUpdateForm from "@/components/members/RoleUpdateForm";
+import { cardProps } from "@/lib/cardStyles";
 
 export default async function MembersPage() {
   const { org, membership } = await requireTenant();
@@ -58,10 +59,7 @@ export default async function MembersPage() {
             key={m._id}
             justify="space-between"
             align="center"
-            bg="bg.surface"
-            border="1px solid"
-            borderColor="border.subtle"
-            borderRadius="xl"
+            {...cardProps}
             p="4"
           >
             <Flex align="center" gap="3">

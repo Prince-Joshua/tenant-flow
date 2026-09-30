@@ -3,6 +3,7 @@ import { requireTenant } from "@/server/data/tenant";
 import PageHeader from "@/components/layout/PageHeader";
 import { RoleBadge } from "@/components/shared";
 import OrgSettingsForm from "@/components/settings/OrgSettingsForm";
+import { cardProps } from "@/lib/cardStyles";
 
 export default async function SettingsPage() {
   const { user, org, membership } = await requireTenant();
@@ -16,10 +17,7 @@ export default async function SettingsPage() {
       />
 
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
-        borderRadius="xl"
+        {...cardProps}
         p="6"
         mb="6"
       >
@@ -36,10 +34,7 @@ export default async function SettingsPage() {
       </Box>
 
       <Box
-        bg="bg.surface"
-        border="1px solid"
-        borderColor="border.subtle"
-        borderRadius="xl"
+        {...cardProps}
         p="6"
       >
         <Text fontSize="sm" fontWeight="semibold" color="text.primary" mb="4">

@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import {
   addCommentAction,
   deleteCommentAction,
 } from "@/server/actions/comments";
+import { loadMoreCommentsAction } from "@/server/actions/pagination";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import { SubmitButton } from "@/components/shared/SubmitButton";
 import { useDocumentActionMenu } from "./DocumentActionsMenuContext";
 import { CloseButton } from "@/components/shared/CloseButton";
@@ -20,18 +22,46 @@ type CommentItem = {
 
 export default function CommentsPanel({
   documentId,
-  comments,
+  comments: initialComments,
+  commentsTotal,
+  initialCursor,
   currentUserId,
   canModerate,
 }: {
   documentId: string;
   comments: CommentItem[];
+  commentsTotal: number;
+  initialCursor: string | null;
   currentUserId: string;
   canModerate: boolean;
 }) {
   const { isOpen, toggle, close } = useDocumentActionMenu("comments");
   const [state, formAction] = useActionState(addCommentAction, undefined);
   const formRef = useRef<HTMLFormElement>(null);
+  const [comments, setComments] = useState(initialComments);
+  const [cursor, setCursor] = useState(initialCursor);
+  const [isLoadingOlder, startLoadOlder] = useTransition();
+
+  // Server data changed (comment added/deleted, or another document opened):
+  // reset to the fresh newest page.
+  useEffect(() => {
+    setComments(initialComments);
+    setCursor(initialCursor);
+  }, [initialComments, initialCursor, documentId]);
+
+  function handleLoadOlder() {
+    if (!cursor) return;
+    startLoadOlder(async () => {
+      const next = await loadMoreCommentsAction(documentId, cursor);
+      // next.items is newest→oldest; prepend in chronological order.
+      setComments((prev) => {
+        const seen = new Set(prev.map((c) => c._id));
+        const older = [...next.items].reverse().filter((c) => !seen.has(c._id));
+        return [...older, ...prev];
+      });
+      setCursor(next.nextCursor);
+    });
+  }
 
   useEffect(() => {
     if (state?.success) {
@@ -62,7 +92,7 @@ export default function CommentsPanel({
         h="auto"
         _hover={{ borderColor: "violet.500", color: "text.primary" }}
       >
-        💬 Comments{comments.length > 0 ? ` (${comments.length})` : ""}
+        💬 Comments{commentsTotal > 0 ? ` (${commentsTotal})` : ""}
       </Button>
       {isOpen && (
         <Box
@@ -74,9 +104,9 @@ export default function CommentsPanel({
           bg="bg.surface"
           border="1px solid"
           borderColor="border.default"
-          borderRadius="lg"
+          borderRadius="xl"
           p="3"
-          boxShadow="0 8px 24px rgba(0,0,0,0.35)"
+          boxShadow="0 16px 40px -12px rgba(0,0,0,0.6)"
           zIndex="10"
         >
           <Flex justify="flex-end" mb="1">
@@ -88,6 +118,15 @@ export default function CommentsPanel({
             </Text>
           ) : (
             <Box maxH="280px" overflowY="auto" mb="3" pr="1">
+              {cursor && (
+                <Box mb="2">
+                  <LoadMoreButton
+                    onClick={handleLoadOlder}
+                    loading={isLoadingOlder}
+                    label="Load older comments"
+                  />
+                </Box>
+              )}
               {comments.map((c) => {
                 const canDelete = canModerate || c.author === currentUserId;
                 return (

@@ -31,8 +31,10 @@ import SendDocumentEmailPanel from "@/components/documents/SendDocumentEmailPane
 import { DocumentActionsMenuProvider } from "@/components/documents/DocumentActionsMenuContext";
 import { getOrgMembers } from "@/server/data/org";
 import { getOrgContacts } from "@/server/data/contacts";
-import { getComments } from "@/server/data/comments";
+import { getCommentsPage } from "@/server/data/comments";
 import { DetailsCloseButton } from "@/components/shared/CloseButton";
+import { LuFileText } from "react-icons/lu";
+import { cardProps } from "@/lib/cardStyles";
 
 const STATUS_FILTERS = [
   { value: "", label: "All (excl. archived)" },
@@ -89,8 +91,8 @@ export default async function DocumentsPage({
     getTemplates(org),
     resolvedSearchParams.doc ? getOrgMembers(org) : Promise.resolve([]),
     resolvedSearchParams.doc
-      ? getComments(org, resolvedSearchParams.doc)
-      : Promise.resolve([]),
+      ? getCommentsPage(org, resolvedSearchParams.doc)
+      : Promise.resolve({ items: [] as any[], nextCursor: null, total: 0 }),
     resolvedSearchParams.doc ? getOrgContacts(org) : Promise.resolve([]),
   ]);
 
@@ -98,7 +100,8 @@ export default async function DocumentsPage({
   const selectedDoc = selected ? JSON.parse(JSON.stringify(selected)) : null;
   const templateOptions = JSON.parse(JSON.stringify(templates));
   const orgMembers = JSON.parse(JSON.stringify(orgMembersRaw));
-  const comments = JSON.parse(JSON.stringify(commentsRaw));
+  // Newest page, oldest→newest for display; older pages load on demand.
+  const comments = [...commentsRaw.items].reverse();
   const contacts = JSON.parse(JSON.stringify(contactsRaw));
   const canManageSharingForDoc = Boolean(
     selectedDoc &&
@@ -141,8 +144,7 @@ export default async function DocumentsPage({
           fontSize="sm"
           fontWeight="semibold"
           color="text.primary"
-          bg="bg.surface"
-          border="1px solid"
+          {...cardProps}
           borderColor="brand.border"
           borderRadius="xl"
           px="6"
@@ -151,8 +153,7 @@ export default async function DocumentsPage({
           + Generate a new document
         </Box>
         <Box
-          bg="bg.surface"
-          border="1px solid"
+          {...cardProps}
           borderColor="brand.border"
           borderTop="none"
           borderRadius="0 0 12px 12px"
@@ -240,7 +241,7 @@ export default async function DocumentsPage({
         <Box>
           {!docs.length ? (
             <EmptyState
-              icon="✦"
+              icon={<LuFileText />}
               title="No documents yet"
               description="Use the panel above to create your first document."
             />
@@ -338,7 +339,7 @@ export default async function DocumentsPage({
 
         {selectedDoc && (
           <Box
-            bg="bg.surface"
+            {...cardProps}
             border={{ base: "none", md: "1px solid" }}
             borderColor="border.subtle"
             borderRadius={{ base: 0, md: "xl" }}
@@ -472,6 +473,8 @@ export default async function DocumentsPage({
                 <CommentsPanel
                   documentId={selectedDoc._id}
                   comments={comments}
+                  commentsTotal={commentsRaw.total}
+                  initialCursor={commentsRaw.nextCursor}
                   currentUserId={user._id.toString()}
                   canModerate={canModerateComments}
                 />

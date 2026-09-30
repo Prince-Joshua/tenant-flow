@@ -3,6 +3,8 @@ import { getAdminStats } from "@/server/data/admin";
 import PageHeader from "@/components/layout/PageHeader";
 import { StatCard, PlanBadge, EmptyState } from "@/components/shared";
 import { ChakraLink } from "@/components/shared/ChakraLink";
+import { cardProps } from "@/lib/cardStyles";
+import { LuBuilding2, LuFileText, LuUsers } from "react-icons/lu";
 
 export default async function AdminOverviewPage() {
   const { stats, recentOrgs, recentUsers } = JSON.parse(
@@ -18,16 +20,16 @@ export default async function AdminOverviewPage() {
         gap="4"
         mb="8"
       >
-        <StatCard label="Total users" value={stats.totalUsers} icon="✦" />
+        <StatCard label="Total users" value={stats.totalUsers} icon={<LuUsers />} />
         <StatCard
           label="Total organizations"
           value={stats.totalOrgs}
-          icon="◈"
+          icon={<LuBuilding2 />}
         />
         <StatCard
           label="Total documents"
           value={stats.totalDocuments}
-          icon="◇"
+          icon={<LuFileText />}
           accent
         />
       </Grid>
@@ -41,10 +43,7 @@ export default async function AdminOverviewPage() {
           ([plan, count]) => (
             <Box
               key={plan}
-              bg="bg.surface"
-              border="1px solid"
-              borderColor="border.subtle"
-              borderRadius="xl"
+              {...cardProps}
               p="5"
             >
               <Flex align="center" justify="space-between" mb="2">
@@ -80,7 +79,7 @@ export default async function AdminOverviewPage() {
             </ChakraLink>
           </Flex>
           {!recentOrgs.length ? (
-            <EmptyState icon="◈" title="No organizations yet" />
+            <EmptyState icon={<LuBuilding2 />} title="No organizations yet" />
           ) : (
             <Flex direction="column" gap="2">
               {recentOrgs.map((org: any) => (
@@ -88,10 +87,7 @@ export default async function AdminOverviewPage() {
                   key={org._id}
                   justify="space-between"
                   align="center"
-                  bg="bg.surface"
-                  border="1px solid"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
+                  {...cardProps}
                   p="4"
                 >
                   <Box>
@@ -123,7 +119,7 @@ export default async function AdminOverviewPage() {
             </ChakraLink>
           </Flex>
           {!recentUsers.length ? (
-            <EmptyState icon="✦" title="No users yet" />
+            <EmptyState icon={<LuUsers />} title="No users yet" />
           ) : (
             <Flex direction="column" gap="2">
               {recentUsers.map((u: any) => (
@@ -131,10 +127,7 @@ export default async function AdminOverviewPage() {
                   key={u._id}
                   justify="space-between"
                   align="center"
-                  bg="bg.surface"
-                  border="1px solid"
-                  borderColor="border.subtle"
-                  borderRadius="xl"
+                  {...cardProps}
                   p="4"
                 >
                   <Box>

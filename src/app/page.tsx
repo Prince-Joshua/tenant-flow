@@ -249,8 +249,7 @@ export default function HomePage() {
           style={{ transform: "translateX(-50%)" }}
         >
           {navLinks.map((link) => (
-            <Box
-              as="a"
+            <ChakraLink
               key={link.href}
               href={link.href}
               fontSize="sm"
@@ -259,7 +258,7 @@ export default function HomePage() {
               _hover={{ color: "text.primary" }}
             >
               {link.label}
-            </Box>
+            </ChakraLink>
           ))}
         </Flex>
 

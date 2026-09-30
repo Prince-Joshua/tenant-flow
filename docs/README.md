@@ -1,4 +1,4 @@
-# TenantFlow
+# Straffy
 
 A production-grade multi-tenant SaaS platform built with TypeScript, Next.js 14, Node.js, Express, MongoDB, Stripe, and Google Gemini. Features JWT refresh token rotation, Stripe subscription lifecycle management, per-tenant usage metering, role-based access control, and an AI writing assistant.
 

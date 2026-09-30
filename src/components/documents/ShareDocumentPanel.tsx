@@ -319,9 +319,9 @@ export default function ShareDocumentPanel({
           bg="bg.surface"
           border="1px solid"
           borderColor="border.default"
-          borderRadius="lg"
+          borderRadius="xl"
           p="3"
-          boxShadow="0 8px 24px rgba(0,0,0,0.35)"
+          boxShadow="0 16px 40px -12px rgba(0,0,0,0.6)"
           zIndex="10"
         >
           <Flex justify="flex-end" mb="1">

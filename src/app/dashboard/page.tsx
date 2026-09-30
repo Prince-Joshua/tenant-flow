@@ -6,6 +6,8 @@ import { getOrgMembers, getOrgActivity } from "@/server/data/org";
 import PageHeader from "@/components/layout/PageHeader";
 import { StatCard, UsageBar, ActivityFeed } from "@/components/shared";
 import { ChakraLink } from "@/components/shared/ChakraLink";
+import { cardProps } from "@/lib/cardStyles";
+import { LuCreditCard, LuFileText, LuUsers } from "react-icons/lu";
 
 export default async function DashboardOverviewPage() {
   const { user, org } = await requireTenant();
@@ -32,21 +34,18 @@ export default async function DashboardOverviewPage() {
         gap="4"
         mb="8"
       >
-        <StatCard label="Documents" value={docPagination.total} icon="✦" />
+        <StatCard label="Documents" value={docPagination.total} icon={<LuFileText />} />
         <StatCard
           label="Members"
           value={`${members.length} / ${org.limits.membersAllowed >= 999999 ? "∞" : org.limits.membersAllowed}`}
-          icon="◈"
+          icon={<LuUsers />}
         />
-        <StatCard label="Plan" value={billing.plan} icon="◇" accent />
+        <StatCard label="Plan" value={billing.plan} icon={<LuCreditCard />} accent />
       </Grid>
 
       <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap="6">
         <Box
-          bg="bg.surface"
-          border="1px solid"
-          borderColor="border.subtle"
-          borderRadius="xl"
+          {...cardProps}
           p="6"
         >
           <Text fontSize="sm" fontWeight="semibold" color="text.primary" mb="4">
@@ -73,19 +72,25 @@ export default async function DashboardOverviewPage() {
             <Text fontSize="sm" fontWeight="semibold" color="text.primary">
               Recent activity
             </Text>
-            <ChakraLink
-              href="/dashboard/documents"
-              fontSize="xs"
-              color="violet.400"
-            >
-              View documents →
-            </ChakraLink>
+            <Flex gap="4">
+              <ChakraLink
+                href="/dashboard/documents"
+                fontSize="xs"
+                color="violet.400"
+              >
+                View documents →
+              </ChakraLink>
+              <ChakraLink
+                href="/dashboard/activity"
+                fontSize="xs"
+                color="violet.400"
+              >
+                All activity →
+              </ChakraLink>
+            </Flex>
           </Flex>
           <Box
-            bg="bg.surface"
-            border="1px solid"
-            borderColor="border.subtle"
-            borderRadius="xl"
+            {...cardProps}
             p="2"
           >
             <ActivityFeed

@@ -3,6 +3,11 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import type { NotificationItem } from "@/server/data/notifications";
+import { loadMoreNotificationsAction } from "@/server/actions/pagination";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
+
+// Mirrors NOTIFICATIONS_PAGE_SIZE (server-only module, so not imported here).
+const PAGE_SIZE = 30;
 import {
   markNotificationReadAction,
   markAllNotificationsReadAction,
@@ -29,18 +34,49 @@ function timeAgo(iso: string): string {
 
 export default function NotificationBell({
   initialNotifications,
+  includeOrg = true,
 }: {
   initialNotifications: NotificationItem[];
+  includeOrg?: boolean;
 }) {
   const [items, setItems] = useState(initialNotifications);
+  // A full first page means there may be older notifications to fetch.
+  const [cursor, setCursor] = useState<string | null>(
+    initialNotifications.length >= PAGE_SIZE
+      ? initialNotifications[initialNotifications.length - 1].cursor
+      : null,
+  );
+  const [isLoadingMore, startLoadMore] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [, startTransition] = useTransition();
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setItems(initialNotifications);
+    setItems((prev) => {
+      // Keep any older pages already loaded; refresh the newest page.
+      const fresh = new Set(initialNotifications.map((n) => n.id));
+      const oldest = initialNotifications[initialNotifications.length - 1];
+      const older = oldest
+        ? prev.filter(
+            (n) => !fresh.has(n.id) && n.createdAt < oldest.createdAt,
+          )
+        : [];
+      return [...initialNotifications, ...older];
+    });
   }, [initialNotifications]);
+
+  function handleLoadMore() {
+    if (!cursor) return;
+    startLoadMore(async () => {
+      const next = await loadMoreNotificationsAction(cursor, includeOrg);
+      setItems((prev) => {
+        const seen = new Set(prev.map((n) => n.id));
+        return [...prev, ...next.items.filter((n) => !seen.has(n.id))];
+      });
+      setCursor(next.nextCursor);
+    });
+  }
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -207,6 +243,15 @@ export default function NotificationBell({
                 </Text>
               </Box>
             ))
+          )}
+          {cursor && (
+            <Box p="2">
+              <LoadMoreButton
+                onClick={handleLoadMore}
+                loading={isLoadingMore}
+                label="Load older"
+              />
+            </Box>
           )}
         </Box>
       )}
