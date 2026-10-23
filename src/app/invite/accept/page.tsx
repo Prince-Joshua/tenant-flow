@@ -9,7 +9,21 @@ export default async function AcceptInvitePage({
   searchParams: Promise<{ token?: string }>;
 }) {
   const { token } = await searchParams;
-  const { ok } = await acceptInviteToken(token || "");
+  const { ok, reason } = await acceptInviteToken(token || "");
+  const title = ok
+    ? "Invite accepted"
+    : reason === "login"
+      ? "Sign in to accept"
+      : reason === "wrong_user"
+        ? "Wrong account"
+        : "Invite invalid";
+  const message = ok
+    ? "You\u2019ve joined the organization. Sign in to get started."
+    : reason === "login"
+      ? "Sign in with the account this invite was sent to, then open the link from your email again."
+      : reason === "wrong_user"
+        ? "This invite was issued to a different account. Sign in with the invited account and try again."
+        : "This invite link is invalid or has expired.";
   return (
     <Flex minH="100vh" align="center" justify="center" {...backdropProps} px="4">
       <Box
@@ -24,12 +38,10 @@ export default async function AcceptInvitePage({
           {ok ? "✓" : "✕"}
         </Text>
         <Text fontSize="xl" fontWeight="bold" color="text.primary" mb="2">
-          {ok ? "Invite accepted" : "Invite invalid"}
+          {title}
         </Text>
         <Text fontSize="sm" color="text.muted" mb="6">
-          {ok
-            ? "You\u2019ve joined the organization. Sign in to get started."
-            : "This invite link is invalid or has expired."}
+          {message}
         </Text>
         <ChakraLink
           href="/login"

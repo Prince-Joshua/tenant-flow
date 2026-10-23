@@ -6,6 +6,7 @@ import stripe from "@/server/config/stripe";
 import PLANS from "@/server/config/plans";
 import { requireTenant } from "@/server/data/tenant";
 import { requireRole } from "@/server/utils/roles";
+import { getUserCountry } from "@/server/geo/getUserCountry";
 import AppError from "@/server/utils/appError";
 
 export async function createCheckoutAction(formData: FormData): Promise<void> {
@@ -18,6 +19,15 @@ export async function createCheckoutAction(formData: FormData): Promise<void> {
     requireRole(membership, "owner");
     if (!PLANS[plan] || plan === "free")
       throw new AppError("Invalid plan", 400, "VALIDATION_ERROR");
+
+    // Same country signal the billing page uses for display, so the
+    // price shown is the price charged. Nigeria gets the fixed NGN Price.
+    const country = await getUserCountry();
+    const plan_ = PLANS[plan];
+    const priceId =
+      country?.toUpperCase() === "NG" && plan_.ngPriceId
+        ? plan_.ngPriceId
+        : plan_.priceId;
 
     let customerId = org.stripeCustomerId;
     if (!customerId) {
@@ -35,7 +45,7 @@ export async function createCheckoutAction(formData: FormData): Promise<void> {
       customer: customerId,
       payment_method_types: ["card"],
       mode: "subscription",
-      line_items: [{ price: PLANS[plan].priceId as string, quantity: 1 }],
+      line_items: [{ price: priceId as string, quantity: 1 }],
       metadata: { orgId: org._id.toString(), plan },
       success_url: `${process.env.APP_URL}/dashboard/billing?success=true`,
       cancel_url: `${process.env.APP_URL}/dashboard/billing?canceled=true`,

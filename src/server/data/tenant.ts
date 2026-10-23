@@ -34,6 +34,7 @@ export async function requireTenant(): Promise<TenantContext> {
     status: "active",
   });
   if (!membership) redirect("/org-select");
+  if (org.suspended) redirect("/suspended");
 
   return { user, org, membership };
 }

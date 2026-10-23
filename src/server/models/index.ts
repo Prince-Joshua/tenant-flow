@@ -60,6 +60,9 @@ const organizationSchema = new Schema<IOrganization>(
     billingCycleEnd: Date,
     subscriptionCurrency: String,
     subscriptionAmount: Number,
+    // Set only by a superadmin. Separate from subscriptionStatus so Stripe
+    // events can never silently lift a suspension.
+    suspended: { type: Boolean, default: false },
     usage: {
       documentsGenerated: { type: Number, default: 0 },
       apiCalls: { type: Number, default: 0 },

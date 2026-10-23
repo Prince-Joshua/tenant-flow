@@ -28,7 +28,17 @@ export async function suspendOrgAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") || "");
 
   await connectDB();
-  await Organization.findByIdAndUpdate(id, { subscriptionStatus: "inactive" });
+  await Organization.findByIdAndUpdate(id, { suspended: true });
+
+  revalidatePath("/admin/orgs");
+}
+
+export async function unsuspendOrgAction(formData: FormData): Promise<void> {
+  await requireSuperAdmin();
+  const id = String(formData.get("id") || "");
+
+  await connectDB();
+  await Organization.findByIdAndUpdate(id, { suspended: false });
 
   revalidatePath("/admin/orgs");
 }

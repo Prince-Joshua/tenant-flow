@@ -38,6 +38,7 @@ export interface IOrganization extends Document {
   // for this customer, not something we choose in our own code.
   subscriptionCurrency?: string;
   subscriptionAmount?: number;
+  suspended: boolean;
   usage: {
     documentsGenerated: number;
     apiCalls: number;

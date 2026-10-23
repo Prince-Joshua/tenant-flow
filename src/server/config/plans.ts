@@ -1,7 +1,10 @@
 import type { PlanConfig } from "@tenantflow/types";
 import { PLAN_LIMITS } from "./planLimits";
 
-const PLANS: Record<string, PlanConfig> = {
+// ngPriceId is the fixed-naira Price created by `pnpm setup-ngn-pricing`.
+type PlanWithNg = PlanConfig & { ngPriceId?: string };
+
+const PLANS: Record<string, PlanWithNg> = {
   free: {
     name: "Free",
     priceId: process.env.STRIPE_FREE_PRICE_ID,
@@ -10,11 +13,13 @@ const PLANS: Record<string, PlanConfig> = {
   pro: {
     name: "Pro",
     priceId: process.env.STRIPE_PRO_PRICE_ID,
+    ngPriceId: process.env.STRIPE_PRO_PRICE_ID_NG,
     limits: { ...PLAN_LIMITS.pro },
   },
   enterprise: {
     name: "Enterprise",
     priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
+    ngPriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID_NG,
     limits: { ...PLAN_LIMITS.enterprise },
   },
 };

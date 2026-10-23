@@ -79,7 +79,11 @@ export default async function AdminOrgsPage({
                   {org.documentCount} docs
                 </Text>
               </Box>
-              <OrgAdminControls orgId={org._id} plan={org.plan} />
+              <OrgAdminControls
+                orgId={org._id}
+                plan={org.plan}
+                suspended={Boolean(org.suspended)}
+              />
             </Flex>
           ))}
           {pagination.pages > 1 && (

@@ -1,11 +1,11 @@
 'use client';
 
 import { Box, Flex } from '@chakra-ui/react';
-import { updateOrgPlanAction, suspendOrgAction, resetOrgUsageAction } from '@/server/actions/admin';
+import { updateOrgPlanAction, suspendOrgAction, unsuspendOrgAction, resetOrgUsageAction } from '@/server/actions/admin';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { nativeSelectCss } from '@/lib/inputStyles';
 
-export default function OrgAdminControls({ orgId, plan }: { orgId: string; plan: string }) {
+export default function OrgAdminControls({ orgId, plan, suspended = false }: { orgId: string; plan: string; suspended?: boolean }) {
   return (
     <Flex gap="2" align="center" wrap="wrap">
       <form action={updateOrgPlanAction} style={{ display: 'flex', gap: 6 }}>
@@ -21,9 +21,9 @@ export default function OrgAdminControls({ orgId, plan }: { orgId: string; plan:
         <input type="hidden" name="id" value={orgId} />
         <SubmitButton size="xs" variant="ghost" color="text.muted">Reset usage</SubmitButton>
       </form>
-      <form action={suspendOrgAction}>
+      <form action={suspended ? unsuspendOrgAction : suspendOrgAction}>
         <input type="hidden" name="id" value={orgId} />
-        <SubmitButton size="xs" variant="ghost" color="text.muted" _hover={{ color: 'rose.400', bg: 'transparent' }}>Suspend</SubmitButton>
+        <SubmitButton size="xs" variant="ghost" color="text.muted" _hover={{ color: suspended ? 'green.400' : 'rose.400', bg: 'transparent' }}>{suspended ? 'Unsuspend' : 'Suspend'}</SubmitButton>
       </form>
     </Flex>
   );

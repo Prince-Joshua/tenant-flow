@@ -6,6 +6,7 @@ import { User, Organization, Membership } from "@/server/models";
 import {
   createSession,
   destroySession,
+  getSessionUserId,
   setActiveOrgCookie,
 } from "@/server/session";
 import { generateRandomToken } from "@/server/utils/tokens";
@@ -205,10 +206,19 @@ export async function verifyEmailToken(
 }
 
 /** Called directly from the /invite/accept page's Server Component. */
+export type AcceptInviteResult = {
+  ok: boolean;
+  reason?: "login" | "wrong_user" | "invalid";
+};
+
+/** The invite only works for the account it was issued to, so the
+ * visitor must be signed in as that user. */
 export async function acceptInviteToken(
   token: string,
-): Promise<{ ok: boolean }> {
-  if (!token) return { ok: false };
+): Promise<AcceptInviteResult> {
+  if (!token) return { ok: false, reason: "invalid" };
+  const userId = await getSessionUserId();
+  if (!userId) return { ok: false, reason: "login" };
   try {
     await connectDB();
     const membership = await Membership.findOne({
@@ -216,13 +226,15 @@ export async function acceptInviteToken(
       inviteExpires: { $gt: Date.now() },
       status: "invited",
     });
-    if (!membership) return { ok: false };
+    if (!membership) return { ok: false, reason: "invalid" };
+    if (membership.user.toString() !== userId)
+      return { ok: false, reason: "wrong_user" };
     membership.status = "active";
     membership.inviteToken = undefined;
     membership.inviteExpires = undefined;
     await membership.save();
     return { ok: true };
   } catch {
-    return { ok: false };
+    return { ok: false, reason: "invalid" };
   }
 }

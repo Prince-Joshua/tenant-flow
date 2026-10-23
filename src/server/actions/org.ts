@@ -61,7 +61,7 @@ export async function inviteMemberAction(
 
     const memberCount = await Membership.countDocuments({
       organization: org._id,
-      status: "active",
+      status: { $in: ["active", "invited"] },
     });
     if (memberCount >= org.limits.membersAllowed)
       throw new AppError(
@@ -70,25 +70,41 @@ export async function inviteMemberAction(
         "PLAN_LIMIT_REACHED",
       );
 
-    const invitedUser = await User.findOne({ email });
-    if (invitedUser) {
-      const existing = await Membership.findOne({
-        user: invitedUser._id,
-        organization: org._id,
-      });
-      if (existing)
-        throw new AppError("User is already a member", 409, "CONFLICT");
-      const inviteToken = generateRandomToken();
+    const invitedUser = await User.findOne({ email: email.toLowerCase() });
+    if (!invitedUser)
+      throw new AppError(
+        "No account found for that email. Ask them to register first.",
+        404,
+        "NOT_FOUND",
+      );
+
+    const existing = await Membership.findOne({
+      user: invitedUser._id,
+      organization: org._id,
+    });
+    if (existing && existing.status !== "invited")
+      throw new AppError("User is already a member", 409, "CONFLICT");
+
+    // Reuse the pending record on a re-invite, so an expired invite
+    // can be resent instead of hitting the unique index.
+    const inviteToken = generateRandomToken();
+    const inviteExpires = new Date(Date.now() + 172800000);
+    if (existing) {
+      existing.role = assignedRole;
+      existing.inviteToken = inviteToken;
+      existing.inviteExpires = inviteExpires;
+      await existing.save();
+    } else {
       await Membership.create({
         user: invitedUser._id,
         organization: org._id,
         role: assignedRole,
         status: "invited",
         inviteToken,
-        inviteExpires: new Date(Date.now() + 172800000),
+        inviteExpires,
       });
     }
-    await sendInviteEmail(email, generateRandomToken(), org.name, user.name);
+    await sendInviteEmail(email, inviteToken, org.name, user.name);
     await logActivity({
       org,
       user,

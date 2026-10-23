@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import connectDB from "@/server/db";
-import { TFDocument, Organization } from "@/server/models";
+import { TFDocument, Organization, ActivityLog } from "@/server/models";
 import { requireTenant } from "@/server/data/tenant";
 import {
   checkUsage,
@@ -645,7 +645,7 @@ export async function sendDocumentByEmailAction(
   _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, org } = await requireTenant();
+  const { user, org, membership } = await requireTenant();
   const id = String(formData.get("id") || "");
   const recipientEmail = String(formData.get("recipientEmail") || "").trim();
   const message = String(formData.get("message") || "").trim();
@@ -658,6 +658,28 @@ export async function sendDocumentByEmailAction(
     await connectDB();
     const doc = await TFDocument.findOne({ _id: id, organization: org._id });
     if (!doc) throw new AppError("Document not found", 404, "NOT_FOUND");
+    // Emailing a copy outside the workspace is sharing, so it follows
+    // the same rule as every other sharing action.
+    if (!canManageDocumentSharing(doc, user, membership))
+      throw new AppError(
+        "You don't have permission to email this document",
+        403,
+        "FORBIDDEN",
+      );
+
+    // Throttle per user, using the audit log that already records sends.
+    const recentSends = await ActivityLog.countDocuments({
+      organization: org._id,
+      user: user._id,
+      action: "DOCUMENT_EMAILED",
+      createdAt: { $gte: new Date(Date.now() - 60 * 60 * 1000) },
+    });
+    if (recentSends >= 20)
+      throw new AppError(
+        "Email limit reached. Try again in an hour.",
+        429,
+        "RATE_LIMITED",
+      );
 
     const sent = await sendDocumentEmail(
       recipientEmail,
